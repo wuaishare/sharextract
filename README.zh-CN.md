@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.15 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.16 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.15 能力
+## 当前 v0.16 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -141,13 +141,14 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
 | TikTok 公共视频 | 有文档的公开 oEmbed | Native |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
+| 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
 | 知乎公开回答 | 匿名首方 Tardis SSR Reader；不使用签名 API / Cookie | Native |
 | 知乎专栏文章 | 公共页面内嵌 initial state；匿名 Tardis SSR fallback | Native |
 | 微博公开帖子 | 匿名首方移动 PWA JSON；仅长文按需读取公开 extend | Native |
 | Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
-| 小红书 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
+| 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -212,6 +213,18 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 ### X / YouTube / Vimeo：优先 oEmbed
 
 这三个平台都有无需登录的公开 oEmbed 路径。ShareXtract 会在 yt-dlp 与通用网页解析之前直接调用 oEmbed，获取作者、标题、Embed metadata、缩略图等结构化信息；X 还会从官方 oEmbed HTML 中归一化可见帖子正文。
+
+### 小红书公开笔记
+
+小红书当前公开笔记有一个与其他平台明显不同的约束：仅有 /explore/{note_id} 的裸 URL，即使笔记本身公开，也可能被重定向到安全 404。当前官方「分享 / 复制链接」会携带临时 xsec_token 与 xsec_source。ShareXtract **只消费用户当前公开分享链接中已经存在的 token**，不会生成、刷新、逆向计算或把 token 跨笔记复用。
+
+官方 xhslink.com / xhslink.cn 短链会先通过公开重定向解析，得到带 token 的 www.xiaohongshu.com/explore/... 或 /discovery/item/... 页面，然后使用普通 ShareXtract HTTP Client 匿名读取。整个过程不需要浏览器 Session、登录 Cookie、X-s / X-t / X-s-common 签名或账号状态。
+
+公开页面当前会把 Vue SSR 的 window.__INITIAL_STATE__ 直接写入首屏 HTML。Adapter 会归一化标题/正文、作者、笔记类型、发布/更新时间、IP 属地、点赞/收藏/评论/分享、话题、图片和视频时长；解析时也能安全处理 SSR 对象中的裸 JavaScript undefined。
+
+视频笔记 SSR 里还可能带临时 MP4、字幕和其他签名流地址。ShareXtract **明确不会导出这些流 URL**。当前 xsec_token 只保留在 canonical public note URL 中，因为没有它页面可能无法匿名打开；其余 shareRedId、apptime 等跟踪参数会被清掉。
+
+由于 xsec_token 本身具有时效性，小红书不会配置固定 Live Health URL，避免 token 过期造成误报。该 Adapter 使用确定性的 route-contract fixture / 单元测试，并可随时用当前官方分享链接进行人工 live verification。
 
 ### 抖音公开视频 Metadata
 

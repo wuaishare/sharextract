@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.15 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.16 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.15 coverage
+## Current v0.16 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -60,13 +60,14 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Vimeo public video | Documented public oEmbed | Native adapter |
 | TikTok public video | Documented public oEmbed | Native adapter |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
+| Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
 | Zhihu public answer | Anonymous first-party Tardis SSR reader; no signed API/cookies | Native adapter |
 | Zhihu Zhuanlan article | Embedded first-party initial state; anonymous Tardis SSR fallback | Native adapter |
 | Weibo public status | Anonymous first-party mobile PWA JSON; public long-text extend only when needed | Native adapter |
 | Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
-| Xiaohongshu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
+| Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
 
@@ -171,6 +172,18 @@ ChatGPT currently embeds public `/share/{id}` conversations and newer `/s/{id}` 
 ### Documented oEmbed adapters
 
 X public posts, YouTube videos, and Vimeo videos have explicit first-party oEmbed routes. ShareXtract calls those documented endpoints before yt-dlp or generic HTML, preserving author/title/embed metadata and visible X post text without requiring developer tokens.
+
+### Xiaohongshu public notes
+
+Xiaohongshu public note access currently has an important constraint: a bare /explore/{note_id} URL can be redirected to a security 404 even when the note itself is public. Current official Share / Copy Link URLs carry a transient xsec_token and xsec_source context. ShareXtract consumes that token when it is already present in the user's current public share URL; it never generates, refreshes, signs, or transfers tokens between notes.
+
+Official xhslink.com / xhslink.cn short links are resolved through their public redirect. The resulting tokenized www.xiaohongshu.com/explore/... or /discovery/item/... page is fetched anonymously with the normal ShareXtract HTTP client. No browser session, login cookie, X-s / X-t / X-s-common request signing, or account state is used.
+
+The public page currently embeds a Vue SSR window.__INITIAL_STATE__ object. ShareXtract normalizes title/description, author, note type, publish/update times, IP location, likes/collections/comments/shares, tags, images, and video duration. Bare JavaScript undefined values are safely normalized while parsing the SSR state.
+
+Video-note SSR can also contain temporary MP4/subtitle URLs and nested signed stream data. ShareXtract deliberately does not export those stream URLs. The current share token is preserved only in the canonical public note URL because the page may be inaccessible without it; unrelated tracking parameters are removed.
+
+Because xsec_token values are transient, Xiaohongshu intentionally has no fixed public Live Health sample. The adapter is covered by deterministic routing/fixture tests and can be manually live-verified with a current official share link.
 
 ### Douyin public video metadata
 

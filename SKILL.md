@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Xiaohongshu public notes
+
+For Xiaohongshu notes, use a current official Share / Copy Link URL or an official xhslink short link. ShareXtract consumes an existing xsec_token from that public URL and reads first-party SSR initial state; it does not generate/refresh tokens or implement X-s/X-t request signing. Bare note URLs without a current token should be rejected with guidance to obtain a fresh official share link. Do not export temporary video/subtitle stream URLs embedded in note state.
+
 ## Douyin public video metadata
 
 For direct public Douyin video URLs or v.douyin.com short links, use the native metadata-only adapter through extract(). It reads the anonymous first-party Jingxuan SSR/VideoObject surface using a normal mobile-browser representation. Do not export temporary playback/download URLs from embedded video_model data, and do not add a_bogus, device signatures, copied cookies, or logged-in session state.

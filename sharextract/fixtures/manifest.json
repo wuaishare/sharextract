@@ -139,6 +139,12 @@
       "adapter": "douyin-video",
       "path": "douyin-video-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "xiaohongshu-note-contract",
+      "adapter": "xiaohongshu-note",
+      "path": "xiaohongshu-note-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

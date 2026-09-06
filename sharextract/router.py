@@ -25,6 +25,7 @@ from .extractors import (
     QwenShareExtractor,
     YtDlpExtractor,
     WeiboStatusExtractor,
+    XiaohongshuNoteExtractor,
     ZhihuAnswerExtractor,
     ZhihuArticleExtractor,
 )
@@ -100,6 +101,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
             ZhihuArticleExtractor(client),
             WeiboStatusExtractor(client),
             DouyinVideoExtractor(client),
+            XiaohongshuNoteExtractor(client),
         ],
         key=lambda extractor: extractor.priority,
     )

@@ -18,7 +18,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Vimeo video | documented public oEmbed | yt-dlp / generic public page | native |
 | X / Twitter post | documented public oEmbed | generic public page | native |
 | Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
-| Xiaohongshu | public page only unless a permitted public endpoint exists | public browser adapter | roadmap |
+| Xiaohongshu note | current official share token/short link → first-party SSR initial state | fresh official share link required when token expires | native, page-structure |
 | TikTok video | documented public oEmbed | yt-dlp / generic public page | native |
 | Douyin video | anonymous first-party Jingxuan SSR metadata; schema.org fallback | generic public page | native metadata-only, undocumented |
 | Weibo status | anonymous first-party mobile PWA JSON; public extend for long text | generic public page | native, undocumented |

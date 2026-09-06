@@ -361,6 +361,21 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "xiaohongshu-note",
+        "platform": "xiaohongshu",
+        "kind": "note",
+        "provenance": "first_party_public_ssr_with_share_token",
+        "built_in": True,
+        "priority": 39,
+        "stability": "page_structure",
+        "expected_methods": ["first_party_public_ssr_initial_state"],
+        "fixture_ids": ["xiaohongshu-note-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+manual-live-transient-token",
+        },
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

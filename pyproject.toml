@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sharextract"
-version = "0.15.0"
+version = "0.16.0"
 description = "Protocol-first public share content extractor for AI chats, social posts, media, and web pages."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "wuaishare" }]
-keywords = ["agent-skills", "content-extraction", "share-links", "web", "ai", "oembed", "rss", "webvtt", "subtitles", "zhihu", "weibo", "tiktok", "douyin"]
+keywords = ["agent-skills", "content-extraction", "share-links", "web", "ai", "oembed", "rss", "webvtt", "subtitles", "zhihu", "weibo", "tiktok", "douyin", "xiaohongshu"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: Apache Software License",

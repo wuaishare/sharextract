@@ -139,3 +139,7 @@ Direct public TikTok video URLs are normalized through TikTok's documented /oemb
 ### Douyin Jingxuan public metadata reader
 
 Douyin's ordinary web-detail JSON surface currently may return an empty body even for public videos. ShareXtract instead uses the anonymous first-party Jingxuan mobile video reader, which embeds SSR state and schema.org VideoObject metadata for public IDs. The adapter consumes only metadata fields and deliberately excludes temporary playback/download URLs contained in nested video_model data. A standard anonymous mobile-browser User-Agent is used for content negotiation; no cookies, private signatures or account state are imported.
+
+### Xiaohongshu tokenized public SSR
+
+Xiaohongshu's note-detail APIs require signed X-s/X-t style headers and are intentionally outside ShareXtract's core boundary. Public official share links already carry a transient xsec_token; when present, the anonymous note page exposes Vue SSR window.__INITIAL_STATE__ with the public note payload. ShareXtract consumes that existing share token only, strips unrelated tracking parameters, and never creates or refreshes tokens. Because share tokens expire, no fixed live-health sample is stored. Video/subtitle stream URLs present inside SSR state are deliberately excluded from normalized output.
