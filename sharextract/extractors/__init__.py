@@ -13,6 +13,7 @@ from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
 from .oembed import TikTokOEmbedExtractor, VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
 from .qwen import QwenShareExtractor
+from .reddit import RedditPostExtractor
 from .ytdlp import YtDlpExtractor
 from .weibo import WeiboStatusExtractor
 from .xiaohongshu import XiaohongshuNoteExtractor
@@ -38,6 +39,7 @@ __all__ = [
     "TikTokOEmbedExtractor",
     "VimeoOEmbedExtractor",
     "QwenShareExtractor",
+    "RedditPostExtractor",
     "YtDlpExtractor",
     "WeiboStatusExtractor",
     "XiaohongshuNoteExtractor",

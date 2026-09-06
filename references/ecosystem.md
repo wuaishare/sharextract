@@ -152,3 +152,8 @@ Kuaishou PC public video pages can embed window.__APOLLO_STATE__ with a normaliz
 ### Kuaishou atlas/image shares
 
 Current Kuaishou image-share HTML exposes an empty static INIT_STATE and renders the actual work client-side. ShareXtract uses its existing isolated public-browser boundary for this case: a fresh context with no imported account state, scoped to the active work DOM. The page may naturally create ephemeral visitor state while running, but ShareXtract does not export or persist it and does not replay protected internal requests. Public /ufile/atlas/ images may be normalized; audio/video streams and protected request URLs are excluded.
+
+
+### Reddit oEmbed + Atom threads
+
+Reddit's anonymous .json post surface can now return 403 for public threads. ShareXtract does not bypass that policy. The documented www.reddit.com/oembed endpoint is used as the primary public contract, while the thread's standard .rss Atom feed is used only as a best-effort content enhancement. Atom entry zero supplies the post body and later entries normalize to comment messages. If RSS is rate-limited, the oEmbed result remains valid. No OAuth, copied account cookie, blocked JSON endpoint, or browser session is required.

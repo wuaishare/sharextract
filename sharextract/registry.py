@@ -243,6 +243,26 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "reddit-oembed",
+        "platform": "reddit",
+        "kind": "discussion_thread",
+        "provenance": "documented_public_oembed_plus_standard_atom",
+        "built_in": True,
+        "priority": 35,
+        "stability": "documented",
+        "expected_methods": ["documented_reddit_oembed"],
+        "fixture_ids": ["reddit-oembed-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.reddit.com/r/redditdev/comments/1txd5mm/reddit_json_endpoints_returning_403/",
+            "platform": "reddit",
+            "methods": ["documented_reddit_oembed"],
+        },
+    },
+    {
         "name": "bilibili-video",
         "platform": "bilibili",
         "kind": "video",

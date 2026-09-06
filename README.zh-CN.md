@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.18 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.19 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.18 能力
+## 当前 v0.19 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -140,6 +140,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | YouTube 公共视频 | 有文档的公开 oEmbed | Native |
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
 | TikTok 公共视频 | 有文档的公开 oEmbed | Native |
+| Reddit 公共帖子 / Thread | 官方公开 oEmbed + 标准 Atom Thread RSS 增强 | Native + Built-in Standard |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
@@ -346,6 +347,16 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### Reddit 公共帖子 / Thread
+
+Reddit 当前匿名公开访问策略已经变化：传统的帖子 .json URL 即使对应公开 Thread，也可能直接返回 HTTP 403。ShareXtract 不会绕过这项限制，也不需要 Reddit OAuth、登录 Cookie 或 Browser 自动化。
+
+新的 Reddit Adapter 把官方公开 https://www.reddit.com/oembed?url=... 作为稳定主契约，获取公开帖子标题、作者、Provider metadata 与官方 Embed HTML。
+
+为了进一步提取完整 Thread，ShareXtract 会尝试同一帖子标准 .rss 地址。Reddit 当前会返回标准 Atom，因此直接复用项目已经存在的 Atom Parser：第一个 Entry 作为帖子正文，后续 Entry 归一化成评论 messages，保留评论作者、时间与 Permalink。
+
+RSS 只是增强层，不是成功条件。如果 Reddit 临时对 RSS 返回 429 或其他不可用状态，ShareXtract 仍然保留官方 oEmbed 结果，并在 metadata 记录 Thread RSS 状态；不会退回被阻断的 .json、OAuth、复制凭据或登录浏览器。
 
 ### 微博公开帖子
 
@@ -766,7 +777,7 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 
 当前重点包括：
 
-- Reddit 公共帖子 / Thread（仅在存在稳定匿名公开路径时进入 Core）；
+- Reddit oEmbed / Atom Thread 路线的协议漂移监控与更多公开样本；
 - 快手图集 / 图片作品 Browser 路线的协议漂移监控与更多样本；
 - 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
 - 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；

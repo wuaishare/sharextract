@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Reddit public posts and threads
+
+For public Reddit thread URLs, use the native Reddit adapter through the normal extract() router. The documented public Reddit oEmbed endpoint is the primary contract. Standard Atom .rss is a best-effort enhancement for post body and comment messages. If RSS is rate-limited or unavailable, preserve oEmbed instead of attempting blocked .json endpoints, OAuth, login cookies, or authenticated browser state.
+
 ## Kuaishou public video metadata
 
 For Kuaishou public videos, prefer a current official v.kuaishou.com or kuaishou.com/f/ Share / Copy Link URL. The native adapter consumes anonymous PC-page Apollo SSR from the same public redirect response and exports metadata only. Bare short-video URLs may omit visionVideoDetail; when that happens, request a fresh official share link instead of creating did cookies or calling the private GraphQL detail API. Never export photoUrl, manifest, adaptive-representation, or temporary CDN MP4 URLs from Apollo state.

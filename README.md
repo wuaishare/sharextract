@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.18 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.19 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.18 coverage
+## Current v0.19 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -59,6 +59,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | YouTube public video | Documented public oEmbed | Native adapter |
 | Vimeo public video | Documented public oEmbed | Native adapter |
 | TikTok public video | Documented public oEmbed | Native adapter |
+| Reddit public post/thread | Documented public oEmbed + standard Atom thread RSS enhancement | Native adapter + built-in standard |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
@@ -71,6 +72,16 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Reddit public posts and threads
+
+Reddit's current anonymous access surface has changed: legacy-style post .json URLs can return HTTP 403 even for public threads. ShareXtract does not work around that restriction and does not require Reddit OAuth, login cookies, or browser automation.
+
+Instead, the Reddit adapter uses the documented public https://www.reddit.com/oembed?url=... endpoint as its stable primary contract. This provides the public post title, author, provider metadata and official embed HTML.
+
+For richer public Thread extraction, ShareXtract then attempts the thread's standard .rss URL, which currently returns Atom. The existing built-in Atom parser is reused rather than introducing a Reddit-specific XML stack. The first Atom entry becomes the post body and later entries become normalized comment messages with author, timestamp and permalink.
+
+Atom RSS is intentionally an enhancement, not a success requirement. If Reddit temporarily returns 429 or otherwise withholds the feed, the documented oEmbed result is preserved and the RSS status is recorded in metadata. The adapter never falls back to the blocked .json surface, OAuth, copied credentials, or authenticated browser state.
 
 ### Weibo public statuses
 

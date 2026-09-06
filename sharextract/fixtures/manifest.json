@@ -157,6 +157,12 @@
       "adapter": "kuaishou-atlas",
       "path": "kuaishou-atlas-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "reddit-oembed-contract",
+      "adapter": "reddit-oembed",
+      "path": "reddit-oembed-contract.json",
+      "scope": "route_contract"
     }
   ]
 }
