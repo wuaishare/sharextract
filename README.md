@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.16 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.17 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.16 coverage
+## Current v0.17 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Weibo public status | Anonymous first-party mobile PWA JSON; public long-text extend only when needed | Native adapter |
 | Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
-| Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
+| Kuaishou public video | Current official share context → anonymous first-party PC Apollo SSR | Native metadata-only adapter |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
 
@@ -172,6 +172,18 @@ ChatGPT currently embeds public `/share/{id}` conversations and newer `/s/{id}` 
 ### Documented oEmbed adapters
 
 X public posts, YouTube videos, and Vimeo videos have explicit first-party oEmbed routes. ShareXtract calls those documented endpoints before yt-dlp or generic HTML, preserving author/title/embed metadata and visible X post text without requiring developer tokens.
+
+### Kuaishou public video metadata
+
+Kuaishou's public PC video page currently has two anonymous representations. A normal desktop-browser representation can embed window.__APOLLO_STATE__, while bare direct short-video URLs may intermittently return only site configuration without the requested visionVideoDetail object. Current official Share / Copy Link URLs are therefore the preferred input.
+
+ShareXtract accepts v.kuaishou.com and kuaishou.com/f/ share links, follows their normal public redirect in a single GET, and consumes the resulting public share context only for that response. It then resolves the Apollo relation from $ROOT_QUERY.visionVideoDetail(...) to the exact VisionVideoDetailPhoto and VisionVideoDetailAuthor objects instead of guessing unrelated entities.
+
+The normalized output includes caption, author, publish time, duration, cover image, exact/display like counts, display view count and tags. Bare short-video URLs are still recognized, but when their anonymous Apollo page omits detail ShareXtract stops with guidance to use a fresh official share link.
+
+Kuaishou Apollo state also contains photoUrl, manifests, adaptive representations and temporary CDN MP4 URLs. ShareXtract deliberately excludes all of those stream URLs and returns metadata only. It does not pre-seed did device cookies, call Kuaishou's private GraphQL detail API, generate signatures, solve slider CAPTCHA, or reuse account state.
+
+Because official share context can be transient, Kuaishou intentionally has no fixed Live Health URL. The adapter uses deterministic route-contract fixtures and release-time manual verification with a current official share link.
 
 ### Xiaohongshu public notes
 

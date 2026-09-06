@@ -376,6 +376,21 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "kuaishou-video",
+        "platform": "kuaishou",
+        "kind": "video",
+        "provenance": "first_party_public_apollo_ssr_with_share_context",
+        "built_in": True,
+        "priority": 40,
+        "stability": "page_structure",
+        "expected_methods": ["first_party_public_apollo_ssr"],
+        "fixture_ids": ["kuaishou-video-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+manual-live-transient-share-context",
+        },
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

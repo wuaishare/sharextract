@@ -8,6 +8,7 @@ from .douyin import DouyinVideoExtractor
 from .generic import GenericWebExtractor
 from .grok import GrokShareExtractor
 from .kimi import KimiShareExtractor
+from .kuaishou import KuaishouVideoExtractor
 from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
 from .oembed import TikTokOEmbedExtractor, VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
@@ -28,6 +29,7 @@ __all__ = [
     "GenericWebExtractor",
     "GrokShareExtractor",
     "KimiShareExtractor",
+    "KuaishouVideoExtractor",
     "GeminiShareExtractor",
     "MastodonStatusExtractor",
     "XPostOEmbedExtractor",

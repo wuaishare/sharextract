@@ -143,3 +143,7 @@ Douyin's ordinary web-detail JSON surface currently may return an empty body eve
 ### Xiaohongshu tokenized public SSR
 
 Xiaohongshu's note-detail APIs require signed X-s/X-t style headers and are intentionally outside ShareXtract's core boundary. Public official share links already carry a transient xsec_token; when present, the anonymous note page exposes Vue SSR window.__INITIAL_STATE__ with the public note payload. ShareXtract consumes that existing share token only, strips unrelated tracking parameters, and never creates or refreshes tokens. Because share tokens expire, no fixed live-health sample is stored. Video/subtitle stream URLs present inside SSR state are deliberately excluded from normalized output.
+
+### Kuaishou public Apollo SSR
+
+Kuaishou PC public video pages can embed window.__APOLLO_STATE__ with a normalized visionVideoDetail relation linking the exact photo, author and tags. Bare direct pages may omit detail, while current official share links can carry the public context needed by the same anonymous page response. ShareXtract consumes that context only in the original public request, never exports it, and does not use did device cookies or private GraphQL detail calls. Playback URLs/manifests present in Apollo state are intentionally excluded.

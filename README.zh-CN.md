@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.16 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.17 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.16 能力
+## 当前 v0.17 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -148,7 +148,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | 微博公开帖子 | 匿名首方移动 PWA JSON；仅长文按需读取公开 extend | Native |
 | Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
-| 快手 | 公共内容 Adapter / 集成路线 | Planned |
+| 快手公开视频 | 当前官方分享上下文 → 匿名首方 PC Apollo SSR | Native metadata-only |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -213,6 +213,18 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 ### X / YouTube / Vimeo：优先 oEmbed
 
 这三个平台都有无需登录的公开 oEmbed 路径。ShareXtract 会在 yt-dlp 与通用网页解析之前直接调用 oEmbed，获取作者、标题、Embed metadata、缩略图等结构化信息；X 还会从官方 oEmbed HTML 中归一化可见帖子正文。
+
+### 快手公开视频 Metadata
+
+快手当前 PC 视频页存在两种匿名表现：普通桌面浏览器表示可以直接内嵌 window.__APOLLO_STATE__，但裸 short-video 直链有时只返回站点配置而没有对应的 visionVideoDetail。因此当前**优先推荐官方「分享 / 复制链接」**作为输入，而不是把裸直链的偶发可用误认为稳定契约。
+
+ShareXtract 支持 v.kuaishou.com 与 kuaishou.com/f/ 官方分享链接，并在**单次公开 GET** 中跟随正常重定向，直接消费最终响应里已有的公开 share context。之后通过 $ROOT_QUERY.visionVideoDetail(...) 的引用关系精确找到对应 VisionVideoDetailPhoto / VisionVideoDetailAuthor / Tags，不会靠“取第一个作者”之类脆弱规则。
+
+当前统一输出 Caption、作者、发布时间、时长、封面、精确/展示点赞数、展示播放量和标签。裸 short-video URL 仍可识别，但当匿名 Apollo 不含 detail 时会明确提示换用当前官方分享链接。
+
+Apollo 状态同时还会包含 photoUrl、Manifest、自适应码率 Representation 和临时 CDN MP4 地址。ShareXtract **全部不导出这些播放/下载流 URL**，只做 metadata-only。整个流程不会预置 did 设备 Cookie、调用私有 GraphQL Detail API、生成签名、破解滑块验证码或复用账号状态。
+
+由于官方分享上下文本身可能具有时效性，快手不会配置固定 Live Health URL；它使用确定性的 route-contract fixture，并在发版时用当前官方分享链接进行 manual live verification。
 
 ### 小红书公开笔记
 
@@ -741,15 +753,11 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 
 当前重点包括：
 
-- ChatGPT native 路径进一步加固；
-- Reddit 公共帖子 / Thread；
-- 知乎；
-- 微博；
-- 抖音 / TikTok；
-- 小红书；
-- 快手；
-- transcript / subtitle；
-- Adapter 健康矩阵与 fixture corpus。
+- Reddit 公共帖子 / Thread（仅在存在稳定匿名公开路径时进入 Core）；
+- 快手图集 / 图片作品的公开 Share / SSR 路径；
+- 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
+- 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；
+- 社区 Adapter、Health 样本与跨平台统一字段持续完善。
 
 Roadmap 会根据平台协议稳定性、公开可访问程度和社区需求动态调整。
 

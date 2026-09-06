@@ -145,6 +145,12 @@
       "adapter": "xiaohongshu-note",
       "path": "xiaohongshu-note-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "kuaishou-video-contract",
+      "adapter": "kuaishou-video",
+      "path": "kuaishou-video-contract.json",
+      "scope": "route_contract"
     }
   ]
 }
