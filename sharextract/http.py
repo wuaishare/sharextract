@@ -8,6 +8,8 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 
+from .version import __version__
+
 
 class UnsafeURL(ValueError):
     pass
@@ -112,7 +114,7 @@ class SafeHttpClient:
         *,
         timeout: float = 20.0,
         max_bytes: int = 8 * 1024 * 1024,
-        user_agent: str = "ShareXtract/0.1 (+https://github.com/wuaishare/sharextract)",
+        user_agent: str = f"ShareXtract/{__version__} (+https://github.com/wuaishare/sharextract)",
     ) -> None:
         self.timeout = timeout
         self.max_bytes = max_bytes

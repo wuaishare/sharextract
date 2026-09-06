@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.21 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.22 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.21 能力
+## 当前 v0.22 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -143,6 +143,9 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Reddit 公共帖子 / Thread | 官方公开 oEmbed + 标准 Atom Thread RSS 增强 | Native + Built-in Standard |
 | Telegram 公共频道 / 群组帖子 | 官方匿名 Post Widget HTML | Native |
 | Pinterest 公开 Pin | 匿名公开 Pin HTML 的标准 Open Graph | Native |
+| Threads 公开帖子 | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
+| Instagram 公开帖子 / Reel | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
+| Facebook 公开帖子 | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
@@ -349,6 +352,20 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### Meta Tokenless 公开嵌入：Threads / Instagram / Facebook
+
+Meta 官方维护的 Meta Embeds for WordPress 已明确提供 Threads、Instagram、Facebook 的 tokenless oEmbed 能力。ShareXtract 使用同样的匿名公开嵌入面，但不会把 oEmbed 当成唯一正文来源，而是把它作为官方增强层。
+
+三个平台的正文主层都来自匿名公开页面自身的标准 Open Graph。tokenless oEmbed 主要补充官方 Embed HTML 与 Provider metadata；即使 oEmbed 临时不可用，已经公开可读的 OG 正文也不会因此丢失。
+
+Threads 的公开页面可以直接从 og:description 读取帖子正文，但 og:image 在纯文本帖子中可能只是账号头像。因此 ShareXtract 只把它记录成 preview metadata，不会误当帖子媒体输出。
+
+Instagram 的公开 Post / Reel 页面可从 OG 读取 Caption、作者线索、点赞/评论展示数、媒体类型与公开封面。Shortcode 作为稳定身份；旧 /p/ 链接如果公开声明同一 Shortcode 实际属于 Reel，则规范化为 /reel/。不会导出视频播放流。
+
+Facebook 的公开 Post 页面可以从 OG 读取作者、正文摘要与帖子预览图。pfbid 链接可能声明成数字 Post canonical；当前会单独记录该声明，但仍以用户请求的公开 Post 标识作为稳定 identity，直到有更强的身份契约被验证。
+
+这三条路线都不需要 Meta Access Token、Developer App、登录 Cookie 或 Browser Runtime。并且从 v0.22 开始，默认 HTTP User-Agent 会跟随真实 ShareXtract 版本，不再永久写死为 0.1。
 
 ### Pinterest 公开 Pin
 
@@ -799,6 +816,7 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 
 - Reddit oEmbed / Atom Thread 路线的协议漂移监控与更多公开样本；
 - Pinterest Open Graph / 声明 canonical 漂移监控与更多公开 Pin 样本；
+- Meta tokenless oEmbed / Open Graph 路线（Threads / Instagram / Facebook）的协议漂移监控；
 - 快手图集 / 图片作品 Browser 路线的协议漂移监控与更多样本；
 - 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
 - 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；

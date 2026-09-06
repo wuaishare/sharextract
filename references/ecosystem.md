@@ -167,3 +167,8 @@ Telegram officially supports embedding messages from public channels and groups 
 ### Pinterest Open Graph Pin surface
 
 Pinterest public Pin pages expose standard Open Graph title, description, image, dimensions, updated time, source link and Pin type in anonymous static HTML. ShareXtract intentionally ignores internal PWS bootstrap state and undocumented pidgets APIs. Pinterest may declare a canonical/og:url Pin ID that differs from the requested Pin and can resolve to different content; therefore the requested Pin ID remains ShareXtract's stable identity while declared canonical metadata is recorded separately with a mismatch flag.
+
+
+### Meta tokenless embeds
+
+Meta's official Meta Embeds for WordPress project documents tokenless oEmbed providers for Threads, Instagram and Facebook. ShareXtract combines those official embed surfaces with standard Open Graph from the anonymous public post page. Open Graph remains the content layer; tokenless oEmbed is an enhancement and may fail without invalidating already-public OG content. No access token, developer app, login cookie or browser is required. Threads profile-image OG data is not exported as post media; Instagram video streams are not exported; Facebook canonical identifier changes are recorded separately from requested identity.

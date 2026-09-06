@@ -26,6 +26,9 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("reddit-oembed", names)
         self.assertIn("telegram-post", names)
         self.assertIn("pinterest-pin", names)
+        self.assertIn("threads-post", names)
+        self.assertIn("instagram-post", names)
+        self.assertIn("facebook-post", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

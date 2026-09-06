@@ -54,6 +54,10 @@ A transport/extraction exception gets one confirmation retry by default before l
 
 Adapters whose usable public sample depends on transient share context or optional browser execution (for example a Xiaohongshu xsec_token URL, a Kuaishou current Share / Copy Link redirect, or Kuaishou atlas rendering) should not register that context as a fixed live sample. Use deterministic fixtures plus manual live verification with a current official share URL and the required optional runtime instead.
 
+Threads, Instagram and Facebook use layered health in the same spirit as Reddit: the fixed expected extraction method is the standard Open Graph content contract, while Meta tokenless oEmbed is an enhancement. Temporary Graph oEmbed failure must not make readable public OG content appear unhealthy.
+
+The default ShareXtract HTTP User-Agent includes the runtime package version. This is part of protocol-drift observability: live diagnostics should identify which ShareXtract version made the request.
+
 Pinterest uses a fixed public Pin whose standard Open Graph contract is stable enough for Live Health. Health validates the requested Pin identity and extraction method; Pinterest-declared canonical URLs are metadata only because they may point at different Pin IDs/content.
 
 Telegram provides a good fixed documented live sample because the Post Widget is an official public embedding surface. Health checks validate the documented widget extraction method rather than any client-side auth/upload helper scripts.

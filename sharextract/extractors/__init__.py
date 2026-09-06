@@ -11,6 +11,11 @@ from .kimi import KimiShareExtractor
 from .kuaishou import KuaishouAtlasExtractor, KuaishouVideoExtractor
 from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
+from .meta_embeds import (
+    FacebookPostExtractor,
+    InstagramPostExtractor,
+    ThreadsPostExtractor,
+)
 from .oembed import TikTokOEmbedExtractor, VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
 from .pinterest import PinterestPinExtractor
 from .qwen import QwenShareExtractor
@@ -36,6 +41,9 @@ __all__ = [
     "KuaishouAtlasExtractor",
     "GeminiShareExtractor",
     "MastodonStatusExtractor",
+    "ThreadsPostExtractor",
+    "InstagramPostExtractor",
+    "FacebookPostExtractor",
     "XPostOEmbedExtractor",
     "YouTubeOEmbedExtractor",
     "TikTokOEmbedExtractor",

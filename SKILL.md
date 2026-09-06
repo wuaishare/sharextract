@@ -66,6 +66,12 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Threads, Instagram and Facebook public posts
+
+For supported public Threads, Instagram and Facebook post URLs, use the native Meta public-post adapters. Standard Open Graph is the readable-content layer and Meta tokenless oEmbed is a best-effort official embed enhancement. Do not require access tokens, developer apps, login cookies or browser state.
+
+For Threads, do not export og:image as post media because it can be the profile image. For Instagram, keep the shortcode as stable identity and never export video stream URLs. For Facebook posts, record provider-declared canonical identifiers separately when they differ from the requested public identifier.
+
 ## Pinterest public Pins
 
 For direct public Pinterest Pin URLs, use the native Pinterest adapter. It reads only standard Open Graph metadata from anonymous public HTML and must not parse Pinterest internal PWS state, call undocumented pidgets endpoints, require API tokens, or use a browser. Keep the requested Pin ID as canonical identity even if Pinterest declares a different canonical/og:url Pin ID; record the declared URL separately and mark the mismatch rather than deduplicating across different Pins.

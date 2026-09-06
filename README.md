@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.21 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.22 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.21 coverage
+## Current v0.22 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -62,6 +62,9 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Reddit public post/thread | Documented public oEmbed + standard Atom thread RSS enhancement | Native adapter + built-in standard |
 | Telegram public channel/group post | Official anonymous Post Widget HTML | Native adapter |
 | Pinterest public Pin | Standard Open Graph on anonymous public Pin HTML | Native adapter |
+| Threads public post | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
+| Instagram public post / Reel | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
+| Facebook public post | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
@@ -74,6 +77,20 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Meta tokenless public embeds: Threads, Instagram and Facebook
+
+Meta's official Meta Embeds for WordPress project documents tokenless oEmbed endpoints for Threads, Instagram and Facebook. ShareXtract validates the same anonymous endpoints but treats them as an enhancement layer rather than the only source of content.
+
+For all three platforms, the public page's standard Open Graph representation is the primary readable-content layer. The tokenless oEmbed result contributes official embed HTML and provider metadata. If the oEmbed enhancement is temporarily unavailable, already-public Open Graph content remains usable.
+
+Threads public pages expose post text through og:description. Their og:image can be the account profile image even for a text post, so ShareXtract intentionally records it only as preview metadata and does not export it as post media.
+
+Instagram public Post/Reel pages expose caption, author clues, like/comment display counts, post type and a public thumbnail through Open Graph. The shortcode is the stable identity. If a legacy /p/ URL declares the same shortcode as a Reel, ShareXtract normalizes the route to /reel/ while keeping the shortcode identity. No video stream URL is exported.
+
+Facebook public Post pages expose author, post summary and preview image through Open Graph. pfbid URLs may declare a numeric post canonical; ShareXtract records that declaration but keeps the requested public post identifier as the stable identity unless a stronger identity contract is validated.
+
+No Meta access token, developer app, login cookie or browser runtime is required for these adapters. The oEmbed calls are tokenless and the default HTTP User-Agent now tracks the actual ShareXtract runtime version instead of remaining hard-coded to 0.1.
 
 ### Pinterest public Pins
 

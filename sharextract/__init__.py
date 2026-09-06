@@ -2,6 +2,6 @@
 
 from .models import ExtractedContent, Message
 from .router import extract
+from .version import __version__
 
-__all__ = ["ExtractedContent", "Message", "extract"]
-__version__ = "0.21.0"
+__all__ = ["ExtractedContent", "Message", "extract", "__version__"]

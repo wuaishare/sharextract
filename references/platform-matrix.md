@@ -20,6 +20,9 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Reddit post/thread | documented public oEmbed | standard Atom thread RSS enhancement; oEmbed survives RSS rate limits | native + built-in standard |
 | Telegram public post | official anonymous Post Widget HTML | generic public page | native, documented |
 | Pinterest public Pin | standard Open Graph on anonymous public Pin HTML | generic public page | native, standard metadata |
+| Threads public post | standard Open Graph + Meta tokenless oEmbed enhancement | generic public page | native, documented + standard |
+| Instagram public post/Reel | standard Open Graph + Meta tokenless oEmbed enhancement | generic public page | native, documented + standard |
+| Facebook public post | standard Open Graph + Meta tokenless oEmbed enhancement | generic public page | native, documented + standard |
 | Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
 | Xiaohongshu note | current official share token/short link → first-party SSR initial state | fresh official share link required when token expires | native, page-structure |
 | Kuaishou video | current official share context → anonymous first-party PC Apollo SSR | fresh official share link when bare detail omits Apollo data | native metadata-only, page-structure |

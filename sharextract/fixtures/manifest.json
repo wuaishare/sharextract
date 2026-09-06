@@ -175,6 +175,24 @@
       "adapter": "pinterest-pin",
       "path": "pinterest-pin-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "threads-post-contract",
+      "adapter": "threads-post",
+      "path": "threads-post-contract.json",
+      "scope": "route_contract"
+    },
+    {
+      "id": "instagram-post-contract",
+      "adapter": "instagram-post",
+      "path": "instagram-post-contract.json",
+      "scope": "route_contract"
+    },
+    {
+      "id": "facebook-post-contract",
+      "adapter": "facebook-post",
+      "path": "facebook-post-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

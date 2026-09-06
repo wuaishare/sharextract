@@ -1,10 +1,18 @@
 import unittest
 from unittest.mock import patch
 
-from sharextract.http import UnsafeURL, validate_public_url
+from sharextract import __version__
+from sharextract.http import SafeHttpClient, UnsafeURL, validate_public_url
 
 
 class PublicUrlTests(unittest.TestCase):
+    def test_default_user_agent_tracks_runtime_version(self):
+        self.assertTrue(
+            SafeHttpClient().user_agent.startswith(
+                f"ShareXtract/{__version__} "
+            )
+        )
+
     def test_rejects_loopback_ipv4(self):
         with self.assertRaises(UnsafeURL):
             validate_public_url("http://127.0.0.1/private")
