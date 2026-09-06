@@ -17,6 +17,7 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("rss-atom", names)
         self.assertIn("zhihu-answer", names)
         self.assertIn("zhihu-article", names)
+        self.assertIn("weibo-status", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

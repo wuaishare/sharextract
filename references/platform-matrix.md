@@ -20,7 +20,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
 | Xiaohongshu | public page only unless a permitted public endpoint exists | public browser adapter | roadmap |
 | Douyin / TikTok | public metadata / yt-dlp where supported | generic public page | optional |
-| Weibo | public page / permitted public data | generic public page | roadmap |
+| Weibo status | anonymous first-party mobile PWA JSON; public extend for long text | generic public page | native, undocumented |
 | Zhihu answer | anonymous first-party Tardis SSR reader | generic public page | native, undocumented |
 | Zhihu Zhuanlan article | embedded first-party initial state | anonymous Tardis SSR / generic public page | native, undocumented |
 | News/blog/article | oEmbed + JSON-LD + OG + article HTML | Trafilatura | generic |

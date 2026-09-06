@@ -121,6 +121,12 @@
       "adapter": "zhihu-article",
       "path": "zhihu-article-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "weibo-status-contract",
+      "adapter": "weibo-status",
+      "path": "weibo-status-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

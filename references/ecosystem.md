@@ -127,3 +127,7 @@ Upstream tools solve different layers. ShareXtract's value is to choose among th
 ### Zhihu public SSR and hydration
 
 Zhihu answers and Zhuanlan articles expose different anonymous public structures. Answer extraction uses the first-party Tardis zm/ans/{id} SSR reader rather than the anonymous-403 API/signing path. Zhuanlan extraction prefers the public page's embedded initial-state article entity, with the Tardis zm/art/{id} reader as fallback. ShareXtract deliberately does not implement private x-zse signing, d_c0 cookie acquisition, or logged-in session reuse.
+
+### Weibo mobile public PWA JSON
+
+Public Weibo status URLs are normalized through the anonymous m.weibo.cn mobile PWA JSON surface. The core status route is statuses/show?id={bid}; statuses marked isLongText may additionally use the public statuses/extend?id={bid} response. The adapter sends only anonymous PWA request headers and does not use account cookies, OAuth tokens, browser session state, or authenticated APIs.

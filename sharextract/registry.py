@@ -289,6 +289,32 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "weibo-status",
+        "platform": "weibo",
+        "kind": "social_post",
+        "provenance": "first_party_public_mobile_json",
+        "built_in": True,
+        "priority": 37,
+        "stability": "first_party_undocumented",
+        "expected_methods": [
+            "first_party_public_mobile_json",
+            "first_party_public_mobile_json_plus_extend",
+        ],
+        "fixture_ids": ["weibo-status-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://weibo.com/2016713117/JhPnDoE7y",
+            "platform": "weibo",
+            "methods": [
+                "first_party_public_mobile_json",
+                "first_party_public_mobile_json_plus_extend",
+            ],
+        },
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

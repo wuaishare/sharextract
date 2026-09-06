@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Weibo public statuses
+
+For public Weibo status URLs, use the native adapter through the normal extract() router. It uses Weibo's anonymous mobile PWA JSON route and requests the public extend route only for statuses marked isLongText. Do not add login cookies or authenticated session state when the public PWA route is unavailable.
+
 ## Zhihu public content
 
 For Zhihu public answers and Zhuanlan articles, use the native adapters through the normal extract() router. The answer adapter uses Zhihu's anonymous public Tardis SSR reader; the article adapter prefers public embedded initial state with Tardis fallback. Do not add x-zse, d_c0, copied cookies, or logged-in browser state to make a blocked Zhihu API route work.

@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.12 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.13 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.12 能力
+## 当前 v0.13 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -142,9 +142,10 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
 | 知乎公开回答 | 匿名首方 Tardis SSR Reader；不使用签名 API / Cookie | Native |
 | 知乎专栏文章 | 公共页面内嵌 initial state；匿名 Tardis SSR fallback | Native |
+| 微博公开帖子 | 匿名首方移动 PWA JSON；仅长文按需读取公开 extend | Native |
 | TikTok / Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
-| 小红书 / 抖音 / 微博 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
+| 小红书 / 抖音 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -283,6 +284,22 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### 微博公开帖子
+
+ShareXtract 现在会把桌面端 weibo.com/{uid}/{bid}，以及移动端 m.weibo.cn/detail/{bid} / status/{bid} 统一路由到微博自己匿名公开的移动 PWA JSON：
+
+    https://m.weibo.cn/statuses/show?id={bid}
+
+该首方公开前端接口当前只需要匿名移动 PWA 自己使用的请求语义：MWeibo-Pwa: 1、X-Requested-With: XMLHttpRequest 与 m.weibo.cn Referer，不需要登录 Cookie、账号 Token、浏览器指纹或已登录 Session。
+
+普通短微博只产生一次 JSON 请求。只有当微博数据明确给出 isLongText=true 时，ShareXtract 才会按需继续读取：
+
+    https://m.weibo.cn/statuses/extend?id={bid}
+
+以获取公开 longTextContent。如果第二个公开长文接口临时失败，会保留 show 接口已经返回的短正文并附加 warning，而不是让整条内容提取失败。
+
+Adapter 会归一化作者、时间、转发/评论/点赞统计、图片，以及防御性的视频/page_info 引用和基础转发原帖元数据。该路线明确标记为“首方公开但未文档 PWA 接口”，并单独进入 Adapter Health 持续监控。
 
 ### 知乎公开回答与专栏文章
 
