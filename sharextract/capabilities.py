@@ -28,7 +28,7 @@ def get_capabilities() -> dict[str, Any]:
                 "name": "chatgpt-share",
                 "platform": "chatgpt",
                 "kind": "conversation",
-                "provenance": "first_party_undocumented",
+                "provenance": "first_party_embedded_turbo_stream_with_legacy_json",
                 "built_in": True,
             },
             {
@@ -78,6 +78,34 @@ def get_capabilities() -> dict[str, Any]:
                 "platform": "mastodon",
                 "kind": "social_post",
                 "provenance": "documented_public_api",
+                "built_in": True,
+            },
+            {
+                "name": "x-oembed",
+                "platform": "x",
+                "kind": "social_post",
+                "provenance": "documented_public_oembed",
+                "built_in": True,
+            },
+            {
+                "name": "youtube-oembed",
+                "platform": "youtube",
+                "kind": "video",
+                "provenance": "documented_public_oembed",
+                "built_in": True,
+            },
+            {
+                "name": "vimeo-oembed",
+                "platform": "vimeo",
+                "kind": "video",
+                "provenance": "documented_public_oembed",
+                "built_in": True,
+            },
+            {
+                "name": "bilibili-video",
+                "platform": "bilibili",
+                "kind": "video",
+                "provenance": "first_party_undocumented",
                 "built_in": True,
             },
             {

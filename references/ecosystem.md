@@ -4,6 +4,18 @@ ShareXtract is an orchestration and normalization layer. It should reuse strong 
 
 ## AI conversation exporters
 
+### ChatGPT React Router turbo-stream
+
+Current public ChatGPT `/share/` and `/s/` pages serialize structured shared content into first-party React Router turbo-stream script chunks. ShareXtract hydrates the public serialization directly over ordinary HTTP and keeps the older backend share JSON only as a compatibility fallback.
+
+### X / YouTube / Vimeo oEmbed
+
+X, YouTube, and Vimeo expose public oEmbed routes suitable for metadata and embed extraction without account tokens. These adapters sit ahead of yt-dlp so open/documented provider interfaces win over heavier media tooling.
+
+### Bilibili public view metadata
+
+Bilibili's public `/x/web-interface/view` JSON route exposes video metadata including title, owner, description, timestamps, duration, pages, public statistics, and thumbnails. ShareXtract treats it as first-party but undocumented rather than as a promised external API contract.
+
 ### chat2md
 
 hao0xffff/chat2md focuses on exporting AI sharing links to Markdown. Its README describes ChatGPT and Gemini as enabled and Doubao as a registered but disabled skeleton, plus API/MCP/UI surfaces.

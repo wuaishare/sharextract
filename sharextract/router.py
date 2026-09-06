@@ -6,6 +6,7 @@ from sharextract.http import SafeHttpClient, validate_public_url
 from sharextract.models import ExtractedContent
 
 from .extractors import (
+    BilibiliVideoExtractor,
     BlueskyPostExtractor,
     ChatGPTShareExtractor,
     ClaudeShareExtractor,
@@ -16,6 +17,9 @@ from .extractors import (
     KimiShareExtractor,
     GeminiShareExtractor,
     MastodonStatusExtractor,
+    VimeoOEmbedExtractor,
+    XPostOEmbedExtractor,
+    YouTubeOEmbedExtractor,
     QwenShareExtractor,
     YtDlpExtractor,
 )
@@ -82,6 +86,10 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
             QwenShareExtractor(client),
             BlueskyPostExtractor(client),
             MastodonStatusExtractor(client),
+            XPostOEmbedExtractor(client),
+            YouTubeOEmbedExtractor(client),
+            VimeoOEmbedExtractor(client),
+            BilibiliVideoExtractor(client),
         ],
         key=lambda extractor: extractor.priority,
     )

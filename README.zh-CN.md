@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.7 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.8 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -52,8 +52,10 @@ GitHub 仓库是 ShareXtract 的长期主仓，平台 Adapter、Skill、测试�
 - Bluesky → AT Protocol
 - Mastodon → 官方实例 REST API
 - Grok → 首方公开 JSON；遇到 WAF 时降级到匿名 X 公共页的 GrokShare GraphQL
+- X / YouTube / Vimeo → 官方/首方 oEmbed
+- Bilibili → 首方公开视频 metadata JSON
 - 普通文章 → oEmbed / JSON-LD / OpenGraph / HTML
-- 视频媒体 → yt-dlp 等成熟生态工具
+- 其他视频媒体 → yt-dlp 等成熟生态工具
 - 真正 JS-only 的公开页面 → 最后才使用受限 Browser fallback
 
 ShareXtract 的价值，不是“再造一个万能爬虫”，而是建立一个统一的 **公开内容协议路由层**。
@@ -113,12 +115,12 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.7 能力
+## 当前 v0.8 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
 | DeepSeek 公共分享 | 首方公开 JSON | Native |
-| ChatGPT 公共分享 | 实验性首方 Share JSON + 网页 fallback | Native + fallback |
+| ChatGPT 公共分享 / Shared Content | 公开 HTML 内嵌 React Router turbo-stream；旧 JSON 兼容 fallback | Native |
 | Claude 公共分享 | 匿名首方 Chat Snapshot JSON | Native |
 | Gemini 公共分享 | 匿名首方 Share RPC | Native |
 | Grok 公共分享 | 首方 Share JSON；不可达时使用匿名 X GrokShare GraphQL browser transport | Native + 可选浏览器 |
@@ -129,7 +131,11 @@ ShareXtract 默认按下面的优先级寻找数据：
 | 任意公开 JSON URL | Safe HTTP + JSON 归一化 | Generic |
 | 新闻 / 博客 / 普通文章 | oEmbed / JSON-LD / OG / HTML | Generic |
 | 更强文章正文提取 | Trafilatura | Optional |
-| YouTube / TikTok / X / Instagram / Bilibili / Vimeo / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
+| X / Twitter 公共帖子 | 有文档的公开 oEmbed | Native |
+| YouTube 公共视频 | 有文档的公开 oEmbed | Native |
+| Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
+| Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
+| TikTok / Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
 | 小红书 / 抖音 / 微博 / 知乎 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
@@ -148,6 +154,12 @@ ShareXtract 会记录：
 ## AI 分享平台为什么不能一套规则解决？
 
 这是 ShareXtract 最核心的设计判断之一。
+
+### ChatGPT
+
+当前 ChatGPT 的 `/share/{id}` 完整会话和较新的 `/s/{id}` Shared Content 都会把结构化数据序列化进公开 HTML 的 React Router turbo-stream。ShareXtract 直接用普通 HTTP 解码这份首方公开数据，不需要登录、Cookie 或浏览器。旧的 `/backend-api/share/{id}` 仍作为兼容 fallback，但真实公开样本当前已经可能返回 403。
+
+ShareXtract 只归一化公开的 user / assistant 内容；system、tool、developer 节点和内部 reasoning 不进入统一正文。
 
 ### DeepSeek
 
@@ -186,6 +198,14 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 `first_party_undocumented_public_rpc`
 
 而不是伪称“Google 官方开放 API”。
+
+### X / YouTube / Vimeo：优先 oEmbed
+
+这三个平台都有无需登录的公开 oEmbed 路径。ShareXtract 会在 yt-dlp 与通用网页解析之前直接调用 oEmbed，获取作者、标题、Embed metadata、缩略图等结构化信息；X 还会从官方 oEmbed HTML 中归一化可见帖子正文。
+
+### Bilibili：首方 metadata JSON
+
+Bilibili 公共视频通过首方 `/x/web-interface/view` JSON 获取标题、UP 主、简介、发布时间、时长、分 P、公开统计和缩略图。ShareXtract 只做公开 metadata 提取，不抓取受保护的视频流。
 
 ### 豆包
 
@@ -629,9 +649,6 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 
 - ChatGPT native 路径进一步加固；
 - Reddit 公共帖子 / Thread；
-- X / Twitter 公共内容；
-- YouTube / Vimeo oEmbed 优先；
-- Bilibili 公共 metadata；
 - 知乎；
 - 微博；
 - 抖音 / TikTok；

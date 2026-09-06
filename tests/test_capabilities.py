@@ -10,6 +10,10 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("deepseek-share", names)
         self.assertIn("chatgpt-share", names)
         self.assertIn("bluesky-atproto", names)
+        self.assertIn("x-oembed", names)
+        self.assertIn("youtube-oembed", names)
+        self.assertIn("vimeo-oembed", names)
+        self.assertIn("bilibili-video", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

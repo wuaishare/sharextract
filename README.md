@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.7 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.8 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -33,12 +33,12 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.7 coverage
+## Current v0.8 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
 | DeepSeek public share | First-party public JSON endpoint | Native adapter |
-| ChatGPT public share | Experimental first-party share JSON, then web fallback | Adapter + fallback |
+| ChatGPT public share/content | First-party React Router turbo-stream for /share and /s; legacy JSON fallback | Native adapter |
 | Claude public share | First-party anonymous chat snapshot JSON | Native adapter |
 | Grok public share | Direct public share-data JSON when reachable; anonymous X GrokShare GraphQL browser transport otherwise | Native + optional browser |
 | Qwen public share | First-party anonymous share JSON API; final answer phases only | Native adapter |
@@ -49,7 +49,11 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | Better article readability | Optional Trafilatura | Optional |
-| YouTube / TikTok / X / Instagram / Bilibili / Vimeo / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
+| X / Twitter public post | Documented public oEmbed | Native adapter |
+| YouTube public video | Documented public oEmbed | Native adapter |
+| Vimeo public video | Documented public oEmbed | Native adapter |
+| Bilibili public video | First-party public metadata JSON | Native adapter |
+| TikTok / Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
 | Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
@@ -114,6 +118,18 @@ Write to a file:
     print(result.extraction_method)
     print(result.markdown)
 
+
+### ChatGPT public shares and shared content
+
+ChatGPT currently embeds public `/share/{id}` conversations and newer `/s/{id}` shared content in first-party React Router turbo-stream data inside the public HTML. ShareXtract decodes that structured stream directly with ordinary HTTP and exports only public user/assistant content. The older `/backend-api/share/{id}` JSON route remains a compatibility fallback when available. System/tool/developer nodes and internal reasoning are not exported.
+
+### Documented oEmbed adapters
+
+X public posts, YouTube videos, and Vimeo videos have explicit first-party oEmbed routes. ShareXtract calls those documented endpoints before yt-dlp or generic HTML, preserving author/title/embed metadata and visible X post text without requiring developer tokens.
+
+### Bilibili public video metadata
+
+Bilibili video URLs are normalized through the first-party `/x/web-interface/view` JSON route. ShareXtract returns title, author, description, publication time, duration, page metadata, public statistics, and thumbnail references; it does not fetch or download protected video streams.
 
 ### Doubao public shares
 

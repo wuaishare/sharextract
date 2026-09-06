@@ -5,7 +5,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Platform / content | Preferred route | Fallback | Core status |
 | --- | --- | --- | --- |
 | DeepSeek share | first-party public JSON | generic public page | native |
-| ChatGPT share | first-party public share JSON, undocumented | generic public page | experimental native |
+| ChatGPT share / shared content | first-party React Router turbo-stream; legacy share JSON compatibility fallback | generic public page | native, undocumented |
 | Bluesky post | documented public AT Protocol AppView + handle resolution | generic public page | native |
 | Mastodon status | documented public instance REST API | generic public page | native |
 | Gemini share | first-party anonymous public share RPC | generic public page | native, undocumented |
@@ -14,9 +14,10 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Claude share | first-party anonymous chat snapshot JSON | generic public page | native, undocumented |
 | Grok share | standard public share-data JSON; anonymous X GrokShare browser transport when challenged | generic public page | native + optional browser |
 | Doubao share | first-party Modern Router JSON embedded in public HTML | generic public page | native, undocumented |
-| YouTube / Vimeo / supported video hosts | official/oEmbed where available; yt-dlp metadata | generic public page | optional |
-| X / Twitter | oEmbed/public page; optional media metadata | generic public page | generic/optional |
-| Bilibili | public metadata / yt-dlp | generic public page | optional |
+| YouTube video | documented public oEmbed | yt-dlp / generic public page | native |
+| Vimeo video | documented public oEmbed | yt-dlp / generic public page | native |
+| X / Twitter post | documented public oEmbed | generic public page | native |
+| Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
 | Xiaohongshu | public page only unless a permitted public endpoint exists | public browser adapter | roadmap |
 | Douyin / TikTok | public metadata / yt-dlp where supported | generic public page | optional |
 | Weibo | public page / permitted public data | generic public page | roadmap |
