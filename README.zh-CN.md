@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.6 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.7 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -113,7 +113,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.6 能力
+## 当前 v0.7 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -130,7 +130,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | 新闻 / 博客 / 普通文章 | oEmbed / JSON-LD / OG / HTML | Generic |
 | 更强文章正文提取 | Trafilatura | Optional |
 | YouTube / TikTok / X / Instagram / Bilibili / Vimeo / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
-| 豆包 | 公共分享 Adapter 路线开发中 | Planned |
+| 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
 | 小红书 / 抖音 / 微博 / 知乎 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
@@ -186,6 +186,12 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 `first_party_undocumented_public_rpc`
 
 而不是伪称“Google 官方开放 API”。
+
+### 豆包
+
+豆包公共 thread/share 页面当前会把首方 Modern Router loader JSON 直接嵌在公开 HTML 中，其中包含 share_info 与 message_snapshot.message_list。ShareXtract 因此使用普通 HTTP GET 直接读取公开页面，不需要登录、Cookie、浏览器渲染或额外私有接口。
+
+Adapter 只归一化公开正文与常规公开媒体引用，不选择 image_ori_raw 等专门用于 raw/去水印的字段，也不会导出 reasoning/thinking 类内部数据。
 
 ### Qwen
 
@@ -621,7 +627,6 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 
 当前重点包括：
 
-- 豆包公共分享 Adapter；
 - ChatGPT native 路径进一步加固；
 - Reddit 公共帖子 / Thread；
 - X / Twitter 公共内容；

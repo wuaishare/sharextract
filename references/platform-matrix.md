@@ -13,7 +13,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Kimi share | first-party anonymous GetChatShare JSON | generic public page | native, undocumented |
 | Claude share | first-party anonymous chat snapshot JSON | generic public page | native, undocumented |
 | Grok share | standard public share-data JSON; anonymous X GrokShare browser transport when challenged | generic public page | native + optional browser |
-| Doubao share | public page / first-party public data when stable | browser/public HTML | roadmap |
+| Doubao share | first-party Modern Router JSON embedded in public HTML | generic public page | native, undocumented |
 | YouTube / Vimeo / supported video hosts | official/oEmbed where available; yt-dlp metadata | generic public page | optional |
 | X / Twitter | oEmbed/public page; optional media metadata | generic public page | generic/optional |
 | Bilibili | public metadata / yt-dlp | generic public page | optional |

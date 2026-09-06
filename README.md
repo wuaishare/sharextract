@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.6 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.7 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -33,7 +33,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.6 coverage
+## Current v0.7 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -50,7 +50,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | Better article readability | Optional Trafilatura | Optional |
 | YouTube / TikTok / X / Instagram / Bilibili / Vimeo / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
-| Doubao | Public-page adapter roadmap | Planned |
+| Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
 | Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
@@ -114,6 +114,12 @@ Write to a file:
     print(result.extraction_method)
     print(result.markdown)
 
+
+### Doubao public shares
+
+ShareXtract reads public doubao.com/thread/{id} and doubao.com/share/{id} pages with the standard HTTP client and extracts the first-party Modern Router loader JSON embedded in the public HTML. The payload contains share metadata plus message_snapshot.message_list, so no Doubao login, copied cookies, browser runtime, or secondary private API is required.
+
+Only public text blocks and normal public media variants are normalized. The adapter intentionally does not select image_ori_raw or other raw/no-watermark-specific fields, and internal reasoning/thinking fields are not exported.
 
 ### Qwen public shares
 

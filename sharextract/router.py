@@ -10,6 +10,7 @@ from .extractors import (
     ChatGPTShareExtractor,
     ClaudeShareExtractor,
     DeepSeekShareExtractor,
+    DoubaoShareExtractor,
     GenericWebExtractor,
     GrokShareExtractor,
     KimiShareExtractor,
@@ -69,17 +70,21 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
     if token not in {"auto", "native", "media", "web"}:
         raise ValueError("strategy must be one of: auto, native, media, web")
 
-    native: list[Extractor] = [
-        DeepSeekShareExtractor(client),
-        ChatGPTShareExtractor(client),
-        ClaudeShareExtractor(client),
-        GeminiShareExtractor(client),
-        GrokShareExtractor(client),
-        KimiShareExtractor(client),
-        QwenShareExtractor(client),
-        BlueskyPostExtractor(client),
-        MastodonStatusExtractor(client),
-    ]
+    native: list[Extractor] = sorted(
+        [
+            DeepSeekShareExtractor(client),
+            DoubaoShareExtractor(client),
+            ChatGPTShareExtractor(client),
+            ClaudeShareExtractor(client),
+            GeminiShareExtractor(client),
+            GrokShareExtractor(client),
+            KimiShareExtractor(client),
+            QwenShareExtractor(client),
+            BlueskyPostExtractor(client),
+            MastodonStatusExtractor(client),
+        ],
+        key=lambda extractor: extractor.priority,
+    )
     media = [YtDlpExtractor(client)]
     web = [GenericWebExtractor(client)]
 

@@ -12,6 +12,10 @@ It is a useful architectural reference for the AI-share niche. At the time Share
 
 Repository: https://github.com/hao0xffff/chat2md
 
+### Doubao embedded router JSON
+
+Doubao public thread/share pages currently embed first-party Modern Router loader data in HTML attributes. The decoded payload contains share_info and message_snapshot.message_list. ShareXtract reads that public embedded JSON directly, avoiding browser rendering and authenticated chat APIs. Normal media variants are retained; raw/no-watermark-specific image fields are intentionally not selected.
+
 ### Qwen public share JSON
 
 Qwen public chat shares expose an anonymous first-party GET /api/v2/chats/share/{id} JSON route. The payload can include final answers, model/file metadata, message-tree relationships, and internal reasoning-related fields. ShareXtract exports only public final answer content and intentionally omits internal reasoning/thinking fields.

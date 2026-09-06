@@ -6,9 +6,12 @@ from sharextract.router import _extractors_for_strategy
 
 class RouterTests(unittest.TestCase):
     def test_auto_orders_native_before_media_and_web(self):
-        names = [x.name for x in _extractors_for_strategy("auto", SafeHttpClient())]
-        self.assertEqual(names[:2], ["deepseek-share", "chatgpt-share"])
-        self.assertEqual(names[-1], "generic-web")
+        extractors = _extractors_for_strategy("auto", SafeHttpClient())
+        names = [x.name for x in extractors]
+        self.assertEqual(names[-2:], ["yt-dlp", "generic-web"])
+        native_priorities = [x.priority for x in extractors[:-2]]
+        self.assertEqual(native_priorities, sorted(native_priorities))
+        self.assertIn("doubao-share", names)
 
     def test_web_strategy_is_generic_only(self):
         names = [x.name for x in _extractors_for_strategy("web", SafeHttpClient())]

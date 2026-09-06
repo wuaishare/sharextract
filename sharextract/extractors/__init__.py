@@ -2,6 +2,7 @@ from .bluesky import BlueskyPostExtractor
 from .chatgpt import ChatGPTShareExtractor
 from .claude import ClaudeShareExtractor
 from .deepseek import DeepSeekShareExtractor
+from .doubao import DoubaoShareExtractor
 from .generic import GenericWebExtractor
 from .grok import GrokShareExtractor
 from .kimi import KimiShareExtractor
@@ -15,6 +16,7 @@ __all__ = [
     "ChatGPTShareExtractor",
     "ClaudeShareExtractor",
     "DeepSeekShareExtractor",
+    "DoubaoShareExtractor",
     "GenericWebExtractor",
     "GrokShareExtractor",
     "KimiShareExtractor",

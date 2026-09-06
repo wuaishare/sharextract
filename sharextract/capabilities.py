@@ -18,6 +18,13 @@ def get_capabilities() -> dict[str, Any]:
                 "built_in": True,
             },
             {
+                "name": "doubao-share",
+                "platform": "doubao",
+                "kind": "conversation",
+                "provenance": "first_party_embedded_router_json",
+                "built_in": True,
+            },
+            {
                 "name": "chatgpt-share",
                 "platform": "chatgpt",
                 "kind": "conversation",
