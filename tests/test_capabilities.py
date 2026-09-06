@@ -24,6 +24,7 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("kuaishou-video", names)
         self.assertIn("kuaishou-atlas", names)
         self.assertIn("reddit-oembed", names)
+        self.assertIn("telegram-post", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

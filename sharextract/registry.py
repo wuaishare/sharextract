@@ -263,6 +263,26 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "telegram-post",
+        "platform": "telegram",
+        "kind": "social_post",
+        "provenance": "documented_public_post_widget",
+        "built_in": True,
+        "priority": 36,
+        "stability": "documented",
+        "expected_methods": ["documented_telegram_post_widget"],
+        "fixture_ids": ["telegram-post-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://t.me/telegram/83",
+            "platform": "telegram",
+            "methods": ["documented_telegram_post_widget"],
+        },
+    },
+    {
         "name": "bilibili-video",
         "platform": "bilibili",
         "kind": "video",

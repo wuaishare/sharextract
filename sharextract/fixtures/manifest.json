@@ -163,6 +163,12 @@
       "adapter": "reddit-oembed",
       "path": "reddit-oembed-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "telegram-post-contract",
+      "adapter": "telegram-post",
+      "path": "telegram-post-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

@@ -157,3 +157,8 @@ Current Kuaishou image-share HTML exposes an empty static INIT_STATE and renders
 ### Reddit oEmbed + Atom threads
 
 Reddit's anonymous .json post surface can now return 403 for public threads. ShareXtract does not bypass that policy. The documented www.reddit.com/oembed endpoint is used as the primary public contract, while the thread's standard .rss Atom feed is used only as a best-effort content enhancement. Atom entry zero supplies the post body and later entries normalize to comment messages. If RSS is rate-limited, the oEmbed result remains valid. No OAuth, copied account cookie, blocked JSON endpoint, or browser session is required.
+
+
+### Telegram Post Widget
+
+Telegram officially supports embedding messages from public channels and groups through its Post Widget. ShareXtract fetches the anonymous t.me embed representation and parses only the already-public widget HTML. This exposes message text, author/channel, timestamp, views, reactions, link-preview metadata and public photos without Bot Tokens, login cookies, OAuth, or browser automation. Widget auth/upload configuration and temporary audio/video stream details are intentionally excluded.

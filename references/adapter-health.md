@@ -54,6 +54,8 @@ A transport/extraction exception gets one confirmation retry by default before l
 
 Adapters whose usable public sample depends on transient share context or optional browser execution (for example a Xiaohongshu xsec_token URL, a Kuaishou current Share / Copy Link redirect, or Kuaishou atlas rendering) should not register that context as a fixed live sample. Use deterministic fixtures plus manual live verification with a current official share URL and the required optional runtime instead.
 
+Telegram provides a good fixed documented live sample because the Post Widget is an official public embedding surface. Health checks validate the documented widget extraction method rather than any client-side auth/upload helper scripts.
+
 Reddit is a useful example of layered health: the fixed live contract is the documented oEmbed method, while Atom thread RSS is an optional enhancement. RSS rate limiting must not change the adapter's expected extraction method or make the stable oEmbed contract appear unhealthy.
 
 Live verification is intentionally not a required CI gate. Public sites, DNS, regional routing, provider maintenance, and rate limits can all create transient failures unrelated to a code change. CI therefore runs deterministic offline health; live checks are suitable for scheduled monitoring and release validation.

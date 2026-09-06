@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.19 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.20 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.19 coverage
+## Current v0.20 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -60,6 +60,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Vimeo public video | Documented public oEmbed | Native adapter |
 | TikTok public video | Documented public oEmbed | Native adapter |
 | Reddit public post/thread | Documented public oEmbed + standard Atom thread RSS enhancement | Native adapter + built-in standard |
+| Telegram public channel/group post | Official anonymous Post Widget HTML | Native adapter |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
@@ -72,6 +73,14 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Telegram public channel/group posts
+
+Telegram officially documents a Post Widget for messages from public channels and groups. ShareXtract reads the same anonymous widget representation directly from the public t.me message URL with embed mode enabled; no Telegram account, Bot Token, login flow, or browser runtime is required.
+
+The widget HTML exposes the public author/channel name, message text, exact datetime, view count, verification state, reactions, link-preview metadata, and public photo backgrounds. ShareXtract normalizes those fields and exports public photo URLs when present.
+
+The widget page also includes client scripts containing auth/upload API configuration and may include temporary audio/video playback details for richer media posts. ShareXtract deliberately ignores those script/API parameters and does not export temporary stream URLs. The adapter only consumes the already-rendered public Post Widget HTML.
 
 ### Reddit public posts and threads
 

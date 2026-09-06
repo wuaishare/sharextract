@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.19 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.20 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.19 能力
+## 当前 v0.20 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -141,6 +141,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
 | TikTok 公共视频 | 有文档的公开 oEmbed | Native |
 | Reddit 公共帖子 / Thread | 官方公开 oEmbed + 标准 Atom Thread RSS 增强 | Native + Built-in Standard |
+| Telegram 公共频道 / 群组帖子 | 官方匿名 Post Widget HTML | Native |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
@@ -347,6 +348,14 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### Telegram 公共频道 / 群组帖子
+
+Telegram 官方明确提供 Public Post Widget，用于嵌入公开频道与公开群组消息。ShareXtract 直接读取同一个匿名 t.me Widget HTML，不需要 Telegram 账号、Bot Token、登录流程或 Browser Runtime。
+
+当前 Widget HTML 可以直接提供公开作者 / 频道名、消息正文、精确发布时间、Views、认证状态、Reactions、Link Preview metadata，以及公开照片背景地址。ShareXtract 会将这些字段归一化，并在有照片时输出公开图片 URL。
+
+Widget 页面同时会包含用于客户端交互的 auth / upload API 配置，某些富媒体帖子也可能带临时音频 / 视频播放信息。ShareXtract 明确忽略这些脚本与 API 参数，不导出临时流地址，只消费已经公开渲染完成的 Post Widget HTML。
 
 ### Reddit 公共帖子 / Thread
 

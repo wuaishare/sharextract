@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Telegram public posts
+
+For public Telegram channel/group message URLs such as t.me/channel/123, use the native Telegram adapter. It reads the official anonymous Post Widget HTML and normalizes text, author, timestamp, views, reactions, link-preview metadata, and public photos. Do not call the widget's auth/upload API configuration, require Bot Tokens, or export temporary audio/video stream URLs.
+
 ## Reddit public posts and threads
 
 For public Reddit thread URLs, use the native Reddit adapter through the normal extract() router. The documented public Reddit oEmbed endpoint is the primary contract. Standard Atom .rss is a best-effort enhancement for post body and comment messages. If RSS is rate-limited or unavailable, preserve oEmbed instead of attempting blocked .json endpoints, OAuth, login cookies, or authenticated browser state.

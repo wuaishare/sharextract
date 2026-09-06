@@ -15,10 +15,10 @@ class AdapterHealthTests(unittest.TestCase):
     def test_offline_health_validates_registry_router_and_fixture_corpus(self):
         report = get_adapter_health()
         self.assertEqual(report["status"], "ok")
-        self.assertEqual(report["summary"]["total"], 27)
+        self.assertEqual(report["summary"]["total"], 28)
         self.assertEqual(report["summary"]["unhealthy"], 0)
         self.assertEqual(report["summary"]["degraded"], 0)
-        self.assertEqual(report["fixture_corpus"]["count"], 27)
+        self.assertEqual(report["fixture_corpus"]["count"], 28)
         self.assertEqual(report["fixture_corpus"]["issues"], [])
 
         by_name = {item["name"]: item for item in report["adapters"]}
