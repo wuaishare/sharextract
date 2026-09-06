@@ -43,3 +43,7 @@ Never describe an undocumented web endpoint as an “official public API”. “
 Prefer a direct public protocol when it returns the full shared object without executing JavaScript. Prefer oEmbed/JSON-LD over brittle CSS selectors. Use readable-content extraction for article-like pages. Use specialized media extractors only for metadata needed from public media URLs. Browser rendering is a last resort for genuinely public JavaScript-only pages.
 
 If a route requires authentication, cookies, a CAPTCHA, bypassing a WAF, reverse-engineering a private signing mechanism, or impersonating a logged-in user, stop and report that the public-only policy cannot extract it.
+
+## Health contract
+
+The machine-readable registry, packaged route-contract fixture corpus, offline CI validation, and optional live verification are documented in [adapter-health.md](adapter-health.md). Platform rows in this matrix are descriptive; the registry is the executable source of truth for adapter health metadata.

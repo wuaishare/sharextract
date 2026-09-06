@@ -52,3 +52,7 @@ Never remove the generic fallback solely because a native adapter exists; public
 Update references/platform-matrix.md with preferred route, fallback, stability level, and known limitations.
 
 If integrating another open-source project, document its license and use it as an optional dependency or subprocess/API boundary unless license compatibility and maintenance justify tighter coupling.
+
+## Health and fixture requirements
+
+A new router adapter must also add a registry entry and at least one packaged route-contract fixture. Run sharextract --health before submitting a PR. Add a fixed live sample only when it is durable and genuinely public; CI intentionally does not depend on live third-party availability. See references/adapter-health.md.

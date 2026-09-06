@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.9 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.10 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -33,6 +33,7 @@ ShareXtract 同时维护为 Python 工具、服务层和 Agent Skill：
 - **平台能力矩阵：** [references/platform-matrix.md](references/platform-matrix.md)
 - **生态与技术路线：** [references/ecosystem.md](references/ecosystem.md)
 - **Adapter 开发指南：** [references/adding-adapters.md](references/adding-adapters.md)
+- **Adapter Health / Fixture Corpus：** [references/adapter-health.md](references/adapter-health.md)
 - **贡献指南：** [CONTRIBUTING.md](CONTRIBUTING.md)
 - **GitHub Releases：** https://github.com/wuaishare/sharextract/releases
 
@@ -115,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.9 能力
+## 当前 v0.10 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|

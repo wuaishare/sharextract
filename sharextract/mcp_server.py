@@ -5,6 +5,7 @@ from typing import Any, Literal
 
 from . import __version__
 from .capabilities import get_capabilities
+from .health import get_adapter_health
 from .router import extract
 
 try:
@@ -59,6 +60,23 @@ def extract_public_url(
 def list_sharextract_capabilities() -> dict[str, Any]:
     """List the installed ShareXtract extraction routes and safety boundary."""
     return {"version": __version__, **get_capabilities()}
+
+
+@mcp.tool()
+def get_sharextract_adapter_health(
+    live: bool = False,
+    adapter_names: list[str] | None = None,
+    timeout: float = 12.0,
+) -> dict[str, Any]:
+    """Validate adapter registry/fixtures and optionally probe fixed public samples."""
+    return {
+        "version": __version__,
+        **get_adapter_health(
+            live=live,
+            adapter_names=adapter_names,
+            timeout=timeout,
+        ),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:

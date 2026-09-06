@@ -1,0 +1,336 @@
+from __future__ import annotations
+
+from typing import Any
+
+
+# One machine-readable source of truth for adapter metadata exposed through
+# capabilities, health reports, documentation tooling, and fixture validation.
+ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
+    {
+        "name": "deepseek-share",
+        "platform": "deepseek",
+        "kind": "conversation",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 10,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_public_json"],
+        "fixture_ids": ["deepseek-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit",
+        },
+    },
+    {
+        "name": "chatgpt-share",
+        "platform": "chatgpt",
+        "kind": "conversation",
+        "provenance": "first_party_embedded_turbo_stream_with_legacy_json",
+        "built_in": True,
+        "priority": 20,
+        "stability": "page_structure",
+        "expected_methods": [
+            "first_party_embedded_turbo_stream",
+            "first_party_undocumented_json",
+        ],
+        "fixture_ids": ["chatgpt-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://chatgpt.com/share/67a4266c-dbcc-800f-9b92-f0a8a6480e16",
+            "platform": "chatgpt",
+            "methods": ["first_party_embedded_turbo_stream"],
+        },
+    },
+    {
+        "name": "claude-share",
+        "platform": "claude",
+        "kind": "conversation",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 20,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_undocumented_public_json"],
+        "fixture_ids": ["claude-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+historical-live",
+        },
+    },
+    {
+        "name": "doubao-share",
+        "platform": "doubao",
+        "kind": "conversation",
+        "provenance": "first_party_embedded_router_json",
+        "built_in": True,
+        "priority": 22,
+        "stability": "page_structure",
+        "expected_methods": ["first_party_embedded_router_json"],
+        "fixture_ids": ["doubao-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.doubao.com/thread/aef4c7a4c78c2",
+            "platform": "doubao",
+            "methods": ["first_party_embedded_router_json"],
+        },
+    },
+    {
+        "name": "kimi-share",
+        "platform": "kimi",
+        "kind": "conversation",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 23,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_undocumented_public_json"],
+        "fixture_ids": ["kimi-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+historical-live",
+        },
+    },
+    {
+        "name": "qwen-share",
+        "platform": "qwen",
+        "kind": "conversation",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 24,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_undocumented_public_json"],
+        "fixture_ids": ["qwen-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+historical-live",
+        },
+    },
+    {
+        "name": "gemini-share",
+        "platform": "gemini",
+        "kind": "conversation",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 25,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_undocumented_public_rpc"],
+        "fixture_ids": ["gemini-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+historical-live",
+        },
+    },
+    {
+        "name": "grok-share",
+        "platform": "grok",
+        "kind": "conversation",
+        "provenance": "public_json_or_anonymous_browser_graphql",
+        "built_in": True,
+        "priority": 27,
+        "stability": "first_party_undocumented",
+        "expected_methods": [
+            "first_party_undocumented_public_json",
+            "public_browser_first_party_graphql",
+        ],
+        "fixture_ids": ["grok-share-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+historical-live",
+        },
+    },
+    {
+        "name": "bluesky-atproto",
+        "platform": "bluesky",
+        "kind": "social_post",
+        "provenance": "documented_public_api",
+        "built_in": True,
+        "priority": 30,
+        "stability": "documented",
+        "expected_methods": ["documented_public_atproto_api"],
+        "fixture_ids": ["bluesky-atproto-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit",
+        },
+        "live_sample": {
+            "url": "https://bsky.app/profile/atproto.com/post/3molpqvzz3d2r",
+            "platform": "bluesky",
+            "methods": ["documented_public_atproto_api"],
+        },
+    },
+    {
+        "name": "x-oembed",
+        "platform": "x",
+        "kind": "social_post",
+        "provenance": "documented_public_oembed",
+        "built_in": True,
+        "priority": 31,
+        "stability": "documented",
+        "expected_methods": ["documented_oembed"],
+        "fixture_ids": ["x-oembed-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://x.com/Interior/status/463440424141459456",
+            "platform": "x",
+            "methods": ["documented_oembed"],
+        },
+    },
+    {
+        "name": "youtube-oembed",
+        "platform": "youtube",
+        "kind": "video",
+        "provenance": "documented_public_oembed",
+        "built_in": True,
+        "priority": 32,
+        "stability": "documented",
+        "expected_methods": ["documented_oembed"],
+        "fixture_ids": ["youtube-oembed-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "platform": "youtube",
+            "methods": ["documented_oembed"],
+        },
+    },
+    {
+        "name": "vimeo-oembed",
+        "platform": "vimeo",
+        "kind": "video",
+        "provenance": "documented_public_oembed",
+        "built_in": True,
+        "priority": 33,
+        "stability": "documented",
+        "expected_methods": ["documented_oembed"],
+        "fixture_ids": ["vimeo-oembed-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://vimeo.com/863362136",
+            "platform": "vimeo",
+            "methods": ["documented_oembed"],
+        },
+    },
+    {
+        "name": "bilibili-video",
+        "platform": "bilibili",
+        "kind": "video",
+        "provenance": "first_party_undocumented",
+        "built_in": True,
+        "priority": 34,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_undocumented_public_json"],
+        "fixture_ids": ["bilibili-video-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.bilibili.com/video/BV1Xj7N6mEa3",
+            "platform": "bilibili",
+            "methods": ["first_party_undocumented_public_json"],
+        },
+    },
+    {
+        "name": "mastodon-public-api",
+        "platform": "mastodon",
+        "kind": "social_post",
+        "provenance": "documented_public_api",
+        "built_in": True,
+        "priority": 40,
+        "stability": "documented",
+        "expected_methods": ["documented_public_mastodon_api"],
+        "fixture_ids": ["mastodon-public-api-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit",
+        },
+    },
+    {
+        "name": "yt-dlp",
+        "platform": "media",
+        "kind": "media",
+        "provenance": "third_party_adapter",
+        "built_in": False,
+        "priority": 60,
+        "stability": "third_party_adapter",
+        "expected_methods": ["yt_dlp_metadata"],
+        "fixture_ids": ["yt-dlp-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+dependency-check",
+        },
+        "optional_dependency": "yt-dlp",
+    },
+    {
+        "name": "generic-web",
+        "platform": "web",
+        "kind": "webpage",
+        "provenance": "standards_and_public_html",
+        "built_in": True,
+        "priority": 1000,
+        "stability": "standard",
+        "expected_methods": [
+            "html_structured",
+            "oembed_plus_html",
+            "jsonld_plus_html",
+            "public_json",
+        ],
+        "fixture_ids": ["generic-web-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit",
+        },
+    },
+    {
+        "name": "rss-atom",
+        "platform": "syndication",
+        "kind": "feed",
+        "provenance": "open_standard",
+        "built_in": True,
+        "priority": 1000,
+        "stability": "standard",
+        "expected_methods": ["standard_rss", "standard_atom"],
+        "fixture_ids": ["rss-atom-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "integrated_in": "generic-web",
+        "live_sample": {
+            "url": "https://wordpress.org/news/feed/",
+            "platform": "rss",
+            "methods": ["standard_rss"],
+        },
+    },
+)
+
+
+def adapter_registry() -> list[dict[str, Any]]:
+    """Return defensive copies suitable for public capability/health output."""
+    result: list[dict[str, Any]] = []
+    for item in ADAPTER_REGISTRY:
+        clone = dict(item)
+        clone["expected_methods"] = list(item.get("expected_methods") or [])
+        clone["fixture_ids"] = list(item.get("fixture_ids") or [])
+        if isinstance(item.get("verification"), dict):
+            clone["verification"] = dict(item["verification"])
+        if isinstance(item.get("live_sample"), dict):
+            clone["live_sample"] = dict(item["live_sample"])
+            if isinstance(item["live_sample"].get("methods"), list):
+                clone["live_sample"]["methods"] = list(
+                    item["live_sample"]["methods"]
+                )
+        result.append(clone)
+    return result

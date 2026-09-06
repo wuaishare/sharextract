@@ -8,7 +8,9 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.9 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.10 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+
+Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
 ## Why this exists
 
@@ -33,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.9 coverage
+## Current v0.10 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -170,6 +172,24 @@ The route is labeled first_party_undocumented_public_json: it is provider-owned 
 ShareXtract recognizes g.co/gemini/share/{id}, gemini.google.com/share/{id}, and the newer share.gemini.google/{token} short links. The adapter resolves new short links to the canonical share ID, then calls the same unauthenticated first-party share RPC used by Gemini's public frontend. No Google account, cookies, Playwright, or browser session is required.
 
 The RPC is intentionally labeled first_party_undocumented_public_rpc: it is public and provider-owned, but it is not a documented external API contract. The generic public-page fallback remains available if Google changes the frontend implementation.
+
+## Adapter health
+
+Every router adapter is registered in one machine-readable registry with priority, provenance, stability, expected extraction methods, verification metadata, and packaged contract fixtures.
+
+Offline deterministic validation:
+
+    sharextract --health
+    sharextract --health --format markdown
+
+Optional real-public-sample verification:
+
+    sharextract --health --live
+    sharextract --health --live --adapter x-oembed --adapter chatgpt-share
+
+CI runs offline health only, so provider outages or rate limits do not make ordinary pull requests flaky. Live health runs through the normal extraction router and verifies the actual normalized platform and extraction method, not merely HTTP availability.
+
+HTTP exposes GET /v1/health/adapters and MCP exposes get_sharextract_adapter_health.
 
 ## MCP and HTTP/OpenAPI services
 

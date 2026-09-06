@@ -65,3 +65,11 @@ Read [references/platform-matrix.md](references/platform-matrix.md) when decidin
 ShareXtract is for content that is already public to the requester. It is not an anti-bot bypass framework. Do not add stealth, CAPTCHA solving, credential harvesting, signature circumvention, mass account rotation, or access-control bypasses.
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
+
+## Adapter health
+
+Before depending on a fragile platform route in an automated workflow, inspect deterministic health with:
+
+    python -m sharextract --health
+
+For explicit release/protocol verification, use --live only against the fixed public samples in the registry. Do not turn arbitrary target URLs into health probes. See references/adapter-health.md.

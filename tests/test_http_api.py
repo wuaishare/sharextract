@@ -22,6 +22,26 @@ class HttpApiTests(unittest.TestCase):
         self.assertEqual(caps.status_code, 200)
         self.assertIn("extractors", caps.json())
 
+        with patch(
+            "sharextract.http_api.get_adapter_health",
+            return_value={
+                "status": "ok",
+                "summary": {"total": 1},
+                "fixture_corpus": {"count": 1},
+                "adapters": [{"name": "x-oembed", "status": "healthy"}],
+            },
+        ) as mocked:
+            adapter_health = self.client.get(
+                "/v1/health/adapters?adapter=x-oembed"
+            )
+        self.assertEqual(adapter_health.status_code, 200)
+        self.assertEqual(adapter_health.json()["status"], "ok")
+        self.assertEqual(
+            adapter_health.json()["adapters"][0]["name"],
+            "x-oembed",
+        )
+        mocked.assert_called_once()
+
     def test_extract_uses_core_contract(self):
         fake = ExtractedContent(
             source_url="https://example.com/a",

@@ -41,10 +41,30 @@ class McpProtocolTests(unittest.IsolatedAsyncioTestCase):
             names = {tool.name for tool in listed.tools}
             self.assertIn("extract_public_url", names)
             self.assertIn("list_sharextract_capabilities", names)
+            self.assertIn("get_sharextract_adapter_health", names)
 
             caps = await client.call_tool("list_sharextract_capabilities", {})
             self.assertFalse(caps.is_error)
             self.assertIn("extractors", caps.structured_content)
+
+            with patch(
+                "sharextract.mcp_server.get_adapter_health",
+                return_value={
+                    "status": "ok",
+                    "summary": {"total": 1},
+                    "fixture_corpus": {"count": 1},
+                    "adapters": [{"name": "x-oembed", "status": "healthy"}],
+                },
+            ):
+                health = await client.call_tool(
+                    "get_sharextract_adapter_health",
+                    {"adapter_names": ["x-oembed"]},
+                )
+            self.assertFalse(health.is_error)
+            self.assertEqual(
+                health.structured_content["adapters"][0]["name"],
+                "x-oembed",
+            )
 
             with patch("sharextract.mcp_server.extract", return_value=fake_result()):
                 extracted = await client.call_tool(

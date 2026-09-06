@@ -5,6 +5,7 @@ from typing import Any, Literal
 
 from . import __version__
 from .capabilities import get_capabilities
+from .health import get_adapter_health
 from .http import FetchError, UnsafeURL
 from .router import ExtractionFailure, extract
 
@@ -68,6 +69,29 @@ def create_app() -> FastAPI:
     @app.get("/v1/capabilities")
     def capabilities() -> dict[str, Any]:
         return {"version": __version__, **get_capabilities()}
+
+    @app.get("/v1/health/adapters")
+    def adapter_health(
+        live: bool = False,
+        adapter: str | None = None,
+        timeout: float = 12.0,
+    ) -> dict[str, Any]:
+        names = [
+            token.strip()
+            for token in (adapter or "").split(",")
+            if token.strip()
+        ]
+        try:
+            return {
+                "version": __version__,
+                **get_adapter_health(
+                    live=live,
+                    adapter_names=names,
+                    timeout=timeout,
+                ),
+            }
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     @app.post("/v1/extract", response_model=ExtractResponse)
     def extract_url(request: ExtractRequest) -> dict[str, Any]:
