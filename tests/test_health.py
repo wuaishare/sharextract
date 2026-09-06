@@ -1,18 +1,24 @@
 import json
+import os
+import tempfile
 import unittest
 from unittest.mock import patch
 
-from sharextract.health import get_adapter_health, render_health_markdown
+from sharextract.health import (
+    _optional_dependency_available,
+    get_adapter_health,
+    render_health_markdown,
+)
 
 
 class AdapterHealthTests(unittest.TestCase):
     def test_offline_health_validates_registry_router_and_fixture_corpus(self):
         report = get_adapter_health()
         self.assertEqual(report["status"], "ok")
-        self.assertEqual(report["summary"]["total"], 25)
+        self.assertEqual(report["summary"]["total"], 26)
         self.assertEqual(report["summary"]["unhealthy"], 0)
         self.assertEqual(report["summary"]["degraded"], 0)
-        self.assertEqual(report["fixture_corpus"]["count"], 25)
+        self.assertEqual(report["fixture_corpus"]["count"], 26)
         self.assertEqual(report["fixture_corpus"]["issues"], [])
 
         by_name = {item["name"]: item for item in report["adapters"]}
@@ -26,6 +32,57 @@ class AdapterHealthTests(unittest.TestCase):
             by_name["yt-dlp"]["status"],
             {"healthy", "optional_unavailable"},
         )
+        self.assertIn(
+            by_name["kuaishou-atlas"]["status"],
+            {"healthy", "optional_unavailable"},
+        )
+
+    def test_playwright_dependency_requires_runtime(self):
+        with patch(
+            "sharextract.health.importlib.util.find_spec",
+            return_value=None,
+        ):
+            self.assertFalse(
+                _optional_dependency_available("playwright-chromium")
+            )
+
+        with tempfile.NamedTemporaryFile() as handle:
+            with patch(
+                "sharextract.health.importlib.util.find_spec",
+                return_value=object(),
+            ), patch.dict(
+                os.environ,
+                {"SHAREXTRACT_BROWSER_EXECUTABLE": handle.name},
+                clear=False,
+            ):
+                self.assertTrue(
+                    _optional_dependency_available("playwright-chromium")
+                )
+
+    def test_atlas_reports_optional_unavailable_when_browser_missing(self):
+        with patch(
+            "sharextract.health._optional_dependency_available",
+            side_effect=lambda name: False
+            if name == "playwright-chromium"
+            else True,
+        ):
+            report = get_adapter_health(
+                adapter_names=["kuaishou-atlas"]
+            )
+        self.assertEqual(
+            report["adapters"][0]["status"],
+            "optional_unavailable",
+        )
+        dependency_check = next(
+            check
+            for check in report["adapters"][0]["checks"]
+            if check["name"] == "optional_dependency"
+        )
+        self.assertEqual(
+            dependency_check["dependency"],
+            "playwright-chromium",
+        )
+        self.assertEqual(dependency_check["status"], "unavailable")
 
     def test_health_can_target_one_adapter(self):
         report = get_adapter_health(adapter_names=["x-oembed"])

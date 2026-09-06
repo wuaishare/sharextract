@@ -151,6 +151,12 @@
       "adapter": "kuaishou-video",
       "path": "kuaishou-video-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "kuaishou-atlas-contract",
+      "adapter": "kuaishou-atlas",
+      "path": "kuaishou-atlas-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

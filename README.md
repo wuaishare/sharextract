@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.17 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.18 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.17 coverage
+## Current v0.18 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -68,6 +68,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
 | Kuaishou public video | Current official share context → anonymous first-party PC Apollo SSR | Native metadata-only adapter |
+| Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
 
@@ -184,6 +185,18 @@ The normalized output includes caption, author, publish time, duration, cover im
 Kuaishou Apollo state also contains photoUrl, manifests, adaptive representations and temporary CDN MP4 URLs. ShareXtract deliberately excludes all of those stream URLs and returns metadata only. It does not pre-seed did device cookies, call Kuaishou's private GraphQL detail API, generate signatures, solve slider CAPTCHA, or reuse account state.
 
 Because official share context can be transient, Kuaishou intentionally has no fixed Live Health URL. The adapter uses deterministic route-contract fixtures and release-time manual verification with a current official share link.
+
+### Kuaishou public atlas / image posts
+
+Kuaishou atlas/image share pages currently ship an empty static window.INIT_STATE = {} and load the actual public work through normal client-side execution. ShareXtract therefore treats this as a browser-last-resort route rather than pretending the page exposes stable SSR JSON.
+
+With the optional browser extra installed, ShareXtract opens the current public share URL in a fresh anonymous browser context with no imported cookies, storage, or account state. It snapshots only the active .swiper-slide-active .player work after normal page rendering, so recommendation cards below the current work are not mixed into the result.
+
+The normalized result includes the author, caption, topics, visible like/comment/collection counts, avatar, music title, and the public /ufile/atlas/ image URLs. A validated live sample currently exposes 31 original atlas images from the active work.
+
+During ordinary page execution Kuaishou may set its own ephemeral visitor cookies and generate protected request parameters. ShareXtract does not copy, pre-seed, manufacture, export, persist, or replay those values, and does not convert those protected requests into a private API integration. Only the final public DOM and public atlas image URLs are used.
+
+Audio/video playback URLs, protected request URLs, device state, share tokens, and browser storage are excluded from normalized output. This route intentionally remains an optional-browser capability; users without Playwright/Chromium still retain the rest of ShareXtract's core adapters.
 
 ### Xiaohongshu public notes
 

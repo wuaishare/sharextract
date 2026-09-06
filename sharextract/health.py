@@ -1,15 +1,67 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import os
 import shutil
 from datetime import datetime, timezone
 from importlib.resources import files
+from pathlib import Path
 from typing import Any, Iterable
 
 from .http import SafeHttpClient
 from .registry import adapter_registry
 from .router import _extractors_for_strategy, extract
 
+
+
+def _optional_dependency_available(dependency: str) -> bool:
+    if dependency == "yt-dlp":
+        return shutil.which("yt-dlp") is not None
+
+    if dependency == "playwright-chromium":
+        if importlib.util.find_spec("playwright") is None:
+            return False
+
+        configured = os.environ.get(
+            "SHAREXTRACT_BROWSER_EXECUTABLE",
+            "",
+        ).strip()
+        if configured:
+            return Path(configured).is_file()
+
+        configured_cache = os.environ.get(
+            "PLAYWRIGHT_BROWSERS_PATH",
+            "",
+        ).strip()
+        if configured_cache and configured_cache != "0":
+            roots = [Path(configured_cache).expanduser()]
+        else:
+            roots = [
+                Path.home() / "Library" / "Caches" / "ms-playwright",
+                Path.home() / ".cache" / "ms-playwright",
+                Path.home() / "AppData" / "Local" / "ms-playwright",
+            ]
+
+        patterns = (
+            "chromium-*/chrome-*/chrome",
+            "chromium-*/chrome-linux/chrome",
+            "chromium-*/chrome-mac*/Chromium.app/Contents/MacOS/Chromium",
+            "chromium-*/chrome-win/chrome.exe",
+            "chromium_headless_shell-*/chrome-headless-shell-*/chrome-headless-shell",
+            "chromium_headless_shell-*/chrome-headless-shell-linux/headless_shell",
+            "chromium_headless_shell-*/chrome-headless-shell-win/headless_shell.exe",
+        )
+        for root in roots:
+            if not root.is_dir():
+                continue
+            for pattern in patterns:
+                if any(path.is_file() for path in root.glob(pattern)):
+                    return True
+        return False
+
+    # Unknown optional runtimes fail closed instead of being reported healthy.
+    return False
 
 def get_adapter_health(
     *,
@@ -151,9 +203,11 @@ def get_adapter_health(
         )
 
         dependency = item.get("optional_dependency")
-        dependency_available = True
-        if dependency == "yt-dlp":
-            dependency_available = shutil.which("yt-dlp") is not None
+        dependency_available = (
+            _optional_dependency_available(str(dependency))
+            if dependency
+            else True
+        )
         if dependency:
             checks.append(
                 {

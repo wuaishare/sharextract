@@ -147,3 +147,8 @@ Xiaohongshu's note-detail APIs require signed X-s/X-t style headers and are inte
 ### Kuaishou public Apollo SSR
 
 Kuaishou PC public video pages can embed window.__APOLLO_STATE__ with a normalized visionVideoDetail relation linking the exact photo, author and tags. Bare direct pages may omit detail, while current official share links can carry the public context needed by the same anonymous page response. ShareXtract consumes that context only in the original public request, never exports it, and does not use did device cookies or private GraphQL detail calls. Playback URLs/manifests present in Apollo state are intentionally excluded.
+
+
+### Kuaishou atlas/image shares
+
+Current Kuaishou image-share HTML exposes an empty static INIT_STATE and renders the actual work client-side. ShareXtract uses its existing isolated public-browser boundary for this case: a fresh context with no imported account state, scoped to the active work DOM. The page may naturally create ephemeral visitor state while running, but ShareXtract does not export or persist it and does not replay protected internal requests. Public /ufile/atlas/ images may be normalized; audio/video streams and protected request URLs are excluded.

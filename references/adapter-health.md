@@ -52,7 +52,7 @@ Live checks use only fixed public sample URLs declared in the registry. They run
 
 A transport/extraction exception gets one confirmation retry by default before live health is marked degraded. Platform or extraction-method drift is treated as a semantic failure immediately rather than being hidden by retries. The report records the number of attempts and any transient errors.
 
-Adapters whose usable public sample depends on transient share context (for example a Xiaohongshu xsec_token URL or a Kuaishou current Share / Copy Link redirect) should not register that context as a fixed live sample. Use deterministic fixtures plus manual live verification with a current official share URL instead.
+Adapters whose usable public sample depends on transient share context or optional browser execution (for example a Xiaohongshu xsec_token URL, a Kuaishou current Share / Copy Link redirect, or Kuaishou atlas rendering) should not register that context as a fixed live sample. Use deterministic fixtures plus manual live verification with a current official share URL and the required optional runtime instead.
 
 Live verification is intentionally not a required CI gate. Public sites, DNS, regional routing, provider maintenance, and rate limits can all create transient failures unrelated to a code change. CI therefore runs deterministic offline health; live checks are suitable for scheduled monitoring and release validation.
 

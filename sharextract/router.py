@@ -16,6 +16,7 @@ from .extractors import (
     GenericWebExtractor,
     GrokShareExtractor,
     KimiShareExtractor,
+    KuaishouAtlasExtractor,
     KuaishouVideoExtractor,
     GeminiShareExtractor,
     MastodonStatusExtractor,
@@ -104,6 +105,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
             DouyinVideoExtractor(client),
             XiaohongshuNoteExtractor(client),
             KuaishouVideoExtractor(client),
+            KuaishouAtlasExtractor(client),
         ],
         key=lambda extractor: extractor.priority,
     )

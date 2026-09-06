@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.17 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.18 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.17 能力
+## 当前 v0.18 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -149,6 +149,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
 | 快手公开视频 | 当前官方分享上下文 → 匿名首方 PC Apollo SSR | Native metadata-only |
+| 快手图集 / 图片作品 | 当前官方公开分享页 → 隔离匿名 Browser DOM | Native 路由 + 可选浏览器 |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -225,6 +226,18 @@ ShareXtract 支持 v.kuaishou.com 与 kuaishou.com/f/ 官方分享链接，并�
 Apollo 状态同时还会包含 photoUrl、Manifest、自适应码率 Representation 和临时 CDN MP4 地址。ShareXtract **全部不导出这些播放/下载流 URL**，只做 metadata-only。整个流程不会预置 did 设备 Cookie、调用私有 GraphQL Detail API、生成签名、破解滑块验证码或复用账号状态。
 
 由于官方分享上下文本身可能具有时效性，快手不会配置固定 Live Health URL；它使用确定性的 route-contract fixture，并在发版时用当前官方分享链接进行 manual live verification。
+
+### 快手图集 / 图片作品
+
+快手当前图集 / 图片分享页的静态首屏虽然还保留 window.INIT_STATE，但实际值已经是空 {}，作品正文和图集会在公开页面正常执行客户端 JavaScript 后渲染。因此 ShareXtract 不会把它伪装成稳定 SSR/API 能力，而是严格放在“浏览器最后手段”的可选路线。
+
+安装 browser extra 后，ShareXtract 会用一个全新的匿名 Browser Context 打开当前官方公开分享页，不导入 Cookie、LocalStorage、登录状态或任何账号数据。渲染完成后只读取当前 .swiper-slide-active .player 作品容器，因此不会把下面的推荐流作品混进当前结果。
+
+当前统一输出包括：作者、正文、Topic、页面可见点赞/评论/收藏数、头像、音乐标题，以及公开 /ufile/atlas/ 图集原图 URL。真实验证样本可以稳定读取当前作品的 31 张图。
+
+在公开页面正常执行过程中，快手自己可能会为普通访客设置临时 visitor Cookie，并自行生成受保护请求参数。ShareXtract 不会预置、复制、制造、导出、持久化或重放这些值，也不会把页面内部受保护请求重新包装成“私有 API”。我们只消费最终公开 DOM 与公开图集图片。
+
+音频/视频播放地址、受保护接口 URL、设备状态、分享 Token 与 Browser Storage 都不会进入统一结果。该路线保持为可选 Browser 能力；未安装 Playwright/Chromium 时，不影响其他 ShareXtract Core Adapter 正常工作。
 
 ### 小红书公开笔记
 
@@ -754,7 +767,7 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 当前重点包括：
 
 - Reddit 公共帖子 / Thread（仅在存在稳定匿名公开路径时进入 Core）；
-- 快手图集 / 图片作品的公开 Share / SSR 路径；
+- 快手图集 / 图片作品 Browser 路线的协议漂移监控与更多样本；
 - 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
 - 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；
 - 社区 Adapter、Health 样本与跨平台统一字段持续完善。

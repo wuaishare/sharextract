@@ -391,6 +391,22 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "kuaishou-atlas",
+        "platform": "kuaishou",
+        "kind": "image_post",
+        "provenance": "public_browser_rendered_share_page_dom",
+        "built_in": True,
+        "priority": 41,
+        "stability": "page_structure",
+        "expected_methods": ["public_browser_rendered_atlas_dom"],
+        "fixture_ids": ["kuaishou-atlas-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+manual-live-optional-browser",
+        },
+        "optional_dependency": "playwright-chromium",
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

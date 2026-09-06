@@ -70,6 +70,10 @@ For unstable first-party endpoints, label them as undocumented and keep a public
 
 For Kuaishou public videos, prefer a current official v.kuaishou.com or kuaishou.com/f/ Share / Copy Link URL. The native adapter consumes anonymous PC-page Apollo SSR from the same public redirect response and exports metadata only. Bare short-video URLs may omit visionVideoDetail; when that happens, request a fresh official share link instead of creating did cookies or calling the private GraphQL detail API. Never export photoUrl, manifest, adaptive-representation, or temporary CDN MP4 URLs from Apollo state.
 
+## Kuaishou public atlas/image posts
+
+For current Kuaishou public atlas/image shares, use the optional browser route only after static public-page extraction is insufficient. The browser must start with no imported cookies, storage, or account state and may read only the active public work DOM plus /ufile/atlas/ images. Do not copy or manufacture did, protected request parameters, browser storage, or page-generated signatures; do not replay the page's protected internal requests as an API. Keep audio/video stream URLs and browser/session state out of normalized output.
+
 ## Xiaohongshu public notes
 
 For Xiaohongshu notes, use a current official Share / Copy Link URL or an official xhslink short link. ShareXtract consumes an existing xsec_token from that public URL and reads first-party SSR initial state; it does not generate/refresh tokens or implement X-s/X-t request signing. Bare note URLs without a current token should be rejected with guidance to obtain a fresh official share link. Do not export temporary video/subtitle stream URLs embedded in note state.

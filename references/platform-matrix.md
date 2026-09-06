@@ -20,6 +20,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
 | Xiaohongshu note | current official share token/short link → first-party SSR initial state | fresh official share link required when token expires | native, page-structure |
 | Kuaishou video | current official share context → anonymous first-party PC Apollo SSR | fresh official share link when bare detail omits Apollo data | native metadata-only, page-structure |
+| Kuaishou atlas/image post | current official public share page → isolated anonymous browser-rendered active-work DOM | generic public page when browser extra is unavailable | native route + optional browser, page-structure |
 | TikTok video | documented public oEmbed | yt-dlp / generic public page | native |
 | Douyin video | anonymous first-party Jingxuan SSR metadata; schema.org fallback | generic public page | native metadata-only, undocumented |
 | Weibo status | anonymous first-party mobile PWA JSON; public extend for long text | generic public page | native, undocumented |

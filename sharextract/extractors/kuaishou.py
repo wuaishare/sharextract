@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import html
+from html.parser import HTMLParser
 import json
 import re
 import urllib.parse
 from datetime import datetime, timezone
 from typing import Any
 
+from sharextract.browser import fetch_public_rendered_snapshot
 from sharextract.models import ExtractedContent
 
 from .base import Extractor, ExtractorError
@@ -247,6 +249,308 @@ def _has_public_share_context(url: str) -> bool:
         or query.get("shareMethod")
         or query.get("shareMode")
     )
+
+
+
+_ATLAS_ACTIONS = {
+    "AUTHOR_NICKNAME_BUTTON": "author",
+    "PHOTO_DESCRIPTION_TEXT": "description",
+    "PHOTO_LIKE_BUTTON": "like_count_display",
+    "COMMENT_BUTTON": "comment_count_display",
+    "COLLECT_BUTTON": "collection_count_display",
+}
+
+
+class KuaishouAtlasExtractor(Extractor):
+    """Extract a public Kuaishou atlas/image post from isolated browser rendering."""
+
+    name = "kuaishou-atlas"
+    priority = 41
+
+    def supports(self, url: str) -> bool:
+        host = self.hostname(url)
+        if host in _SHORT_HOSTS:
+            return bool(_path_parts(url))
+        if host in _KUAISHOU_HOSTS:
+            parts = _path_parts(url)
+            if len(parts) >= 2 and parts[0] == "f":
+                return True
+        if host in {
+            "c.kuaishou.com",
+            "c.kuaishou.cn",
+        } or _legacy_host(host):
+            return self._looks_like_picture_share(url)
+        return False
+
+    def extract(self, url: str) -> ExtractedContent:
+        snapshot = fetch_public_rendered_snapshot(
+            url,
+            root_selector=".swiper-slide-active .player",
+            wait_selector=".swiper-slide-active .player .work-info",
+            timeout=self.client.timeout,
+            settle_ms=2500,
+            locale="zh-CN",
+        )
+        resolved = snapshot.get("url") or url
+        photo_id = self._photo_id_from_any_url(resolved) or self._photo_id_from_any_url(url)
+        if not photo_id:
+            raise ExtractorError(
+                "Kuaishou public picture share did not expose a supported photo ID."
+            )
+
+        parser = _KuaishouAtlasDomParser()
+        try:
+            parser.feed(snapshot.get("html") or "")
+            parser.close()
+        except Exception as exc:
+            raise ExtractorError(
+                f"Kuaishou rendered atlas DOM was not parseable: {exc}"
+            ) from exc
+
+        images = _dedupe_strings(parser.atlas_images)
+        if not images:
+            raise ExtractorError(
+                "Kuaishou public share rendered no atlas images. "
+                "The link may be a video or the public page structure may have changed."
+            )
+
+        author = _clean_author(parser.values.get("author", ""))
+        description = _clean_text(parser.values.get("description", ""))
+        topics = _dedupe_strings(parser.topics)
+        music_title = _clean_text(parser.music_title)
+        canonical = f"https://c.kuaishou.com/fw/photo/{photo_id}"
+
+        media = [
+            {
+                "type": "image",
+                "url": image_url,
+                "index": index,
+            }
+            for index, image_url in enumerate(images, start=1)
+        ]
+
+        return ExtractedContent(
+            source_url=url,
+            canonical_url=canonical,
+            platform="kuaishou",
+            kind="image_post",
+            extraction_method="public_browser_rendered_atlas_dom",
+            confidence=0.96,
+            title=description or f"Kuaishou image post {photo_id}",
+            author=author,
+            text=description,
+            markdown=description,
+            media=media,
+            metadata={
+                "photo_id": photo_id,
+                "image_count": len(images),
+                "author": {
+                    "name": author,
+                    "avatar_url": parser.avatar_url,
+                },
+                "stats": {
+                    "like_count_display": _clean_text(
+                        parser.values.get("like_count_display", "")
+                    ),
+                    "comment_count_display": _clean_text(
+                        parser.values.get("comment_count_display", "")
+                    ),
+                    "collection_count_display": _clean_text(
+                        parser.values.get("collection_count_display", "")
+                    ),
+                },
+                "topics": topics,
+                "music_title": music_title,
+                "public_browser_execution": True,
+                "browser_context": "fresh_ephemeral_no_imported_state",
+                "imports_device_cookie": False,
+                "persists_browser_state": False,
+                "private_api_replayed": False,
+                "private_signature_generated": False,
+                "stream_urls_exported": False,
+                "share_context_exported": False,
+                "endpoint_documentation": "public_page_rendering_only",
+            },
+            warnings=[
+                "Kuaishou atlas/image posts currently require normal client-side "
+                "execution of the public share page; static INIT_STATE is empty.",
+                "ShareXtract opens a fresh anonymous browser context and reads only "
+                "the currently active public work DOM. It does not import, copy, "
+                "persist, or manufacture did cookies or account state.",
+                "The page may naturally create its own ephemeral visitor state and "
+                "protected requests during normal execution. ShareXtract does not "
+                "replay those APIs or generate their private request parameters.",
+                "Only public atlas image URLs are exported. Audio/video playback "
+                "URLs, protected request URLs, tokens, and browser state are excluded.",
+            ],
+        )
+
+    @staticmethod
+    def _looks_like_picture_share(url: str) -> bool:
+        query = urllib.parse.parse_qs(
+            urllib.parse.urlsplit(url).query,
+            keep_blank_values=True,
+        )
+        method = _first(query.get("shareMethod")).upper()
+        sub_biz = _first(query.get("subBiz")).upper()
+        return (
+            method == "PICTURE"
+            or sub_biz in {"PHOTO", "PICTURE", "ATLAS"}
+        )
+
+    @staticmethod
+    def _photo_id_from_any_url(url: str) -> str | None:
+        parsed = urllib.parse.urlsplit(url)
+        parts = _path_parts(url)
+        candidate: str | None = None
+        if len(parts) >= 3 and parts[:2] == ["fw", "photo"]:
+            candidate = parts[2]
+        elif len(parts) >= 2 and parts[0] == "short-video":
+            candidate = parts[1]
+        query = urllib.parse.parse_qs(parsed.query)
+        candidate = (
+            candidate
+            or _first(query.get("photoId"))
+            or _first(query.get("photo_id"))
+        )
+        if candidate and _PHOTO_ID_RE.fullmatch(candidate):
+            return candidate
+        return None
+
+
+class _KuaishouAtlasDomParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.active: list[dict[str, Any]] = []
+        self.values: dict[str, str] = {}
+        self.topics: list[str] = []
+        self.atlas_images: list[str] = []
+        self.avatar_url: str | None = None
+        self.music_title = ""
+        self._topic_depths: set[int] = set()
+        self._music_depths: set[int] = set()
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        tag = tag.lower()
+        is_void = tag in {
+            "area",
+            "base",
+            "br",
+            "col",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "meta",
+            "param",
+            "source",
+            "track",
+            "wbr",
+        }
+        if not is_void:
+            self.depth += 1
+        attr = {
+            str(key): str(value)
+            for key, value in attrs
+            if key and value is not None
+        }
+        action = attr.get("data-log-action", "")
+        key = _ATLAS_ACTIONS.get(action)
+        if key and not is_void:
+            self.active.append(
+                {
+                    "key": key,
+                    "depth": self.depth,
+                    "parts": [],
+                }
+            )
+
+        classes = {
+            token
+            for token in attr.get("class", "").split()
+            if token
+        }
+        if "topic" in classes and not is_void:
+            self._topic_depths.add(self.depth)
+        if "title-0" in classes and not is_void:
+            self._music_depths.add(self.depth)
+
+        if tag.lower() == "img":
+            src = _https_url(attr.get("src"))
+            if src and "/ufile/atlas/" in urllib.parse.urlsplit(src).path:
+                self.atlas_images.append(src)
+            if src and "avatar-image" in classes and not self.avatar_url:
+                self.avatar_url = src
+
+    def handle_data(self, data: str) -> None:
+        if not data:
+            return
+        for capture in self.active:
+            capture["parts"].append(data)
+        if self._topic_depths:
+            token = _clean_text(data)
+            if token:
+                self.topics.append(token)
+        if self._music_depths and not self.music_title:
+            token = _clean_text(data)
+            if token:
+                self.music_title = token
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {
+            "area",
+            "base",
+            "br",
+            "col",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "meta",
+            "param",
+            "source",
+            "track",
+            "wbr",
+        }:
+            return
+        remaining: list[dict[str, Any]] = []
+        for capture in self.active:
+            if capture["depth"] == self.depth:
+                value = _clean_text("".join(capture["parts"]))
+                if value and capture["key"] not in self.values:
+                    self.values[capture["key"]] = value
+            else:
+                remaining.append(capture)
+        self.active = remaining
+        self._topic_depths.discard(self.depth)
+        self._music_depths.discard(self.depth)
+        self.depth = max(0, self.depth - 1)
+
+
+def _clean_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def _clean_author(value: Any) -> str:
+    token = _clean_text(value)
+    if token.startswith("@"):
+        token = token[1:].strip()
+    return token
+
+
+def _dedupe_strings(values: list[str]) -> list[str]:
+    result: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        token = str(value or "").strip()
+        if not token or token in seen:
+            continue
+        seen.add(token)
+        result.append(token)
+    return result
 
 
 def _extract_apollo_state(page_html: str) -> dict[str, Any]:

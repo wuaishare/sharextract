@@ -57,4 +57,4 @@ jobs:
       - name: Run tests with browser package available
         run: python -m unittest discover -s tests -v
       - name: Import browser helper
-        run: python -c "from sharextract.browser import fetch_public_json_response; print(fetch_public_json_response.__name__)"
+        run: python -c "from sharextract.browser import fetch_public_json_response, fetch_public_rendered_snapshot; print(fetch_public_json_response.__name__, fetch_public_rendered_snapshot.__name__)"
