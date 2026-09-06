@@ -6,6 +6,7 @@ from sharextract.http import SafeHttpClient, validate_public_url
 from sharextract.models import ExtractedContent
 
 from .extractors import (
+    BlueskyPostExtractor,
     ChatGPTShareExtractor,
     DeepSeekShareExtractor,
     GenericWebExtractor,
@@ -65,6 +66,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
     native: list[Extractor] = [
         DeepSeekShareExtractor(client),
         ChatGPTShareExtractor(client),
+        BlueskyPostExtractor(client),
     ]
     media = [YtDlpExtractor(client)]
     web = [GenericWebExtractor(client)]

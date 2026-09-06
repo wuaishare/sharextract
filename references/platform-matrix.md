@@ -6,6 +6,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | --- | --- | --- | --- |
 | DeepSeek share | first-party public JSON | generic public page | native |
 | ChatGPT share | first-party public share JSON, undocumented | generic public page | experimental native |
+| Bluesky post | documented public AT Protocol AppView + handle resolution | generic public page | native |
 | Gemini share | public page / structured hydration | generic public page | roadmap |
 | Claude share | public snapshot page | generic public page | roadmap |
 | Grok share | public share page | generic public page | roadmap |

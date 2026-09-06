@@ -46,6 +46,14 @@ A hosted API/tooling ecosystem for extracting URL metadata/content and media-rel
 
 Project: https://microlink.io/
 
+## Open social protocols
+
+### Bluesky / AT Protocol
+
+AT Protocol exposes documented Lexicon/XRPC endpoints and a public Bluesky AppView for unauthenticated public reads. ShareXtract should prefer these documented protocol APIs over parsing the JavaScript application shell.
+
+Docs: https://docs.bsky.app/ and https://atproto.com/
+
 ## Chinese social platforms
 
 ### MediaCrawler

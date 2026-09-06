@@ -37,6 +37,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | --- | --- | --- |
 | DeepSeek public share | First-party public JSON endpoint | Native adapter |
 | ChatGPT public share | Experimental first-party share JSON, then web fallback | Adapter + fallback |
+| Bluesky public post | Documented AT Protocol public AppView + handle resolution | Native adapter |
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | Better article readability | Optional Trafilatura | Optional |
