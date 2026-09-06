@@ -172,3 +172,8 @@ Pinterest public Pin pages expose standard Open Graph title, description, image,
 ### Meta tokenless embeds
 
 Meta's official Meta Embeds for WordPress project documents tokenless oEmbed providers for Threads, Instagram and Facebook. ShareXtract combines those official embed surfaces with standard Open Graph from the anonymous public post page. Open Graph remains the content layer; tokenless oEmbed is an enhancement and may fail without invalidating already-public OG content. No access token, developer app, login cookie or browser is required. Threads profile-image OG data is not exported as post media; Instagram video streams are not exported; Facebook canonical identifier changes are recorded separately from requested identity.
+
+
+### LinkedIn public Embed
+
+LinkedIn documents off-LinkedIn embedding for eligible Public/Anyone posts. ShareXtract derives the activity ID from normal LinkedIn post/feed URLs and consumes the anonymous public Embed page. The Embed DOM provides actor, commentary, relative publication display, reaction/comment counts, explicit feed images and article/link attachments. No OAuth, access token, li_at cookie or browser is required. Non-embeddable posts are treated as unavailable rather than authenticated or bypassed.

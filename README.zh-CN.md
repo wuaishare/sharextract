@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.22 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.23 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.22 能力
+## 当前 v0.23 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -146,6 +146,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Threads 公开帖子 | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
 | Instagram 公开帖子 / Reel | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
 | Facebook 公开帖子 | 标准 Open Graph 正文 + Meta tokenless oEmbed 增强 | Native |
+| LinkedIn 公开帖子 | 官方匿名 Public Embed 页面 | Native |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
@@ -352,6 +353,18 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### LinkedIn 公开帖子
+
+LinkedIn 官方允许可见性为 Public / Anyone、且作者设置允许站外嵌入的帖子显示在第三方网站中。ShareXtract 直接消费这一匿名 Public Embed 页面，不需要 LinkedIn 登录、OAuth / Access Token、复制 li_at Cookie 或 Browser Runtime。
+
+LinkedIn activity ID 作为稳定身份。ShareXtract 支持常见 /posts/...-activity-{id}-...、/feed/update/urn:li:activity:{id} 以及公开 Embed URL，并统一规范化到 activity feed URL。
+
+Public Embed DOM 可以直接给出稳定的作者链接、正文、相对发布时间展示、Reactions、Comments，以及明确区分的媒体 / 附件结构。ShareXtract 只输出 feed-images content 容器中明确属于帖子的图片；头像、公司 Logo 和普通 OG preview 不会被误当帖子媒体。
+
+文章 / 链接附件会单独归一化为 attachment，包含 URL、标题、副标题和缩略图。评论正文当前不会抓取，只保留 Embed 已公开展示的评论数量。
+
+如果某条帖子因为可见性或帖子类型限制而不允许 LinkedIn 站外 Embed，Adapter 会直接停止，不会转向登录、Cookie 或其他绕过路径。
 
 ### Meta Tokenless 公开嵌入：Threads / Instagram / Facebook
 
@@ -817,6 +830,7 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 - Reddit oEmbed / Atom Thread 路线的协议漂移监控与更多公开样本；
 - Pinterest Open Graph / 声明 canonical 漂移监控与更多公开 Pin 样本；
 - Meta tokenless oEmbed / Open Graph 路线（Threads / Instagram / Facebook）的协议漂移监控；
+- LinkedIn Public Embed 路线的 DOM / Post type 漂移监控与更多公开样本；
 - 快手图集 / 图片作品 Browser 路线的协议漂移监控与更多样本；
 - 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
 - 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；

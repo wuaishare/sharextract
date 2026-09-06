@@ -8,6 +8,7 @@ from .douyin import DouyinVideoExtractor
 from .generic import GenericWebExtractor
 from .grok import GrokShareExtractor
 from .kimi import KimiShareExtractor
+from .linkedin import LinkedInPostExtractor
 from .kuaishou import KuaishouAtlasExtractor, KuaishouVideoExtractor
 from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
@@ -37,6 +38,7 @@ __all__ = [
     "GenericWebExtractor",
     "GrokShareExtractor",
     "KimiShareExtractor",
+    "LinkedInPostExtractor",
     "KuaishouVideoExtractor",
     "KuaishouAtlasExtractor",
     "GeminiShareExtractor",

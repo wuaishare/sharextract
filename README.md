@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.22 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.23 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.22 coverage
+## Current v0.23 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -65,6 +65,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Threads public post | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
 | Instagram public post / Reel | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
 | Facebook public post | Standard Open Graph content + Meta tokenless oEmbed enhancement | Native adapter |
+| LinkedIn public post | Official anonymous public Embed representation | Native adapter |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
@@ -77,6 +78,18 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### LinkedIn public posts
+
+LinkedIn officially allows posts whose visibility is Public/Anyone and whose author settings permit off-LinkedIn embedding to be embedded on third-party sites. ShareXtract consumes that anonymous public Embed representation directly; no LinkedIn login, OAuth token, access token, copied li_at cookie, or browser runtime is required.
+
+The stable identity is the LinkedIn activity ID. ShareXtract accepts normal /posts/...-activity-{id}-... URLs plus /feed/update/urn:li:activity:{id} and public embed forms, then normalizes to the activity feed URL.
+
+The public Embed DOM exposes a stable actor link, commentary, relative publication display, reaction count, comment count, and explicit media/attachment structures. ShareXtract exports only images explicitly contained in feed-images content. Profile images, company logos and generic Open Graph preview images are not treated as post media.
+
+Article/link attachments are normalized separately with attachment URL, title, subtitle and thumbnail. Comment bodies are intentionally not exported; only the public comment count exposed by the Embed is retained.
+
+If LinkedIn does not make a post embeddable outside LinkedIn because of visibility or post-type restrictions, the adapter stops instead of attempting authentication or bypassing that policy.
 
 ### Meta tokenless public embeds: Threads, Instagram and Facebook
 

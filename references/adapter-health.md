@@ -54,6 +54,8 @@ A transport/extraction exception gets one confirmation retry by default before l
 
 Adapters whose usable public sample depends on transient share context or optional browser execution (for example a Xiaohongshu xsec_token URL, a Kuaishou current Share / Copy Link redirect, or Kuaishou atlas rendering) should not register that context as a fixed live sample. Use deterministic fixtures plus manual live verification with a current official share URL and the required optional runtime instead.
 
+LinkedIn uses a fixed Public post whose anonymous Embed representation is eligible off LinkedIn. Health validates the activity-ID keyed public Embed contract. If LinkedIn changes visibility/embed eligibility or the public DOM structure, that should surface as protocol drift rather than triggering authentication fallback.
+
 Threads, Instagram and Facebook use layered health in the same spirit as Reddit: the fixed expected extraction method is the standard Open Graph content contract, while Meta tokenless oEmbed is an enhancement. Temporary Graph oEmbed failure must not make readable public OG content appear unhealthy.
 
 The default ShareXtract HTTP User-Agent includes the runtime package version. This is part of protocol-drift observability: live diagnostics should identify which ShareXtract version made the request.

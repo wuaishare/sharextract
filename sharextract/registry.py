@@ -363,6 +363,26 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "linkedin-post",
+        "platform": "linkedin",
+        "kind": "social_post",
+        "provenance": "official_public_embed_page",
+        "built_in": True,
+        "priority": 41,
+        "stability": "documented",
+        "expected_methods": ["public_linkedin_embed"],
+        "fixture_ids": ["linkedin-post-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.linkedin.com/posts/microsoft_june-activity-7477715981667086336-BV_s",
+            "platform": "linkedin",
+            "methods": ["public_linkedin_embed"],
+        },
+    },
+    {
         "name": "bilibili-video",
         "platform": "bilibili",
         "kind": "video",

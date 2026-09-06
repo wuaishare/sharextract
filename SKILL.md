@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## LinkedIn public posts
+
+For LinkedIn posts that are publicly embeddable off LinkedIn, use the native LinkedIn adapter. It derives the stable activity ID from normal post/feed/embed URLs and reads the official anonymous public Embed representation. Normalize actor, commentary, relative time display, reaction/comment counts, explicit feed images, and article/link attachments. Do not require OAuth, access tokens, li_at cookies, login automation or browser state. Do not export comment bodies, and do not treat profile/logo/OG preview images as post media.
+
 ## Threads, Instagram and Facebook public posts
 
 For supported public Threads, Instagram and Facebook post URLs, use the native Meta public-post adapters. Standard Open Graph is the readable-content layer and Meta tokenless oEmbed is a best-effort official embed enhancement. Do not require access tokens, developer apps, login cookies or browser state.

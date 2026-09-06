@@ -193,6 +193,12 @@
       "adapter": "facebook-post",
       "path": "facebook-post-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "linkedin-post-contract",
+      "adapter": "linkedin-post",
+      "path": "linkedin-post-contract.json",
+      "scope": "route_contract"
     }
   ]
 }
