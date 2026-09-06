@@ -45,6 +45,15 @@ Optional higher-quality web/media dependencies:
 
     python -m pip install -e ".[all]"
 
+
+Optional service surfaces:
+
+    python -m pip install -e ".[mcp,service]"
+    sharextract-mcp
+    sharextract-api --port 8787
+
+Use the service layers only as transports around the same public-content extraction contract; platform-specific logic belongs in adapters, not in MCP/HTTP handlers.
+
 ## Output contract
 
 The JSON result contains source_url, canonical_url, platform, kind, extraction_method, confidence, title, author, text, markdown, optional html, normalized messages, media references, metadata, warnings, and retrieved_at.

@@ -54,6 +54,12 @@ AT Protocol exposes documented Lexicon/XRPC endpoints and a public Bluesky AppVi
 
 Docs: https://docs.bsky.app/ and https://atproto.com/
 
+### Mastodon / ActivityPub-compatible servers
+
+Mastodon exposes documented anonymous REST reads for public statuses. ShareXtract probes the status API on the source instance and falls back to generic web extraction if the host is not Mastodon-compatible or the public API is unavailable.
+
+Docs: https://docs.joinmastodon.org/
+
 ## Chinese social platforms
 
 ### MediaCrawler

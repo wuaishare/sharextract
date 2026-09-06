@@ -1,0 +1,18 @@
+import unittest
+
+from sharextract.capabilities import get_capabilities
+
+
+class CapabilitiesTests(unittest.TestCase):
+    def test_reports_core_routes_and_security_boundary(self):
+        data = get_capabilities()
+        names = {item["name"] for item in data["extractors"]}
+        self.assertIn("deepseek-share", names)
+        self.assertIn("chatgpt-share", names)
+        self.assertIn("bluesky-atproto", names)
+        self.assertIn("generic-web", names)
+        self.assertFalse(data["security_boundary"]["bypasses_authentication"])
+
+
+if __name__ == "__main__":
+    unittest.main()

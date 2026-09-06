@@ -6,7 +6,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.1 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.2 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -38,6 +38,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | DeepSeek public share | First-party public JSON endpoint | Native adapter |
 | ChatGPT public share | Experimental first-party share JSON, then web fallback | Adapter + fallback |
 | Bluesky public post | Documented AT Protocol public AppView + handle resolution | Native adapter |
+| Mastodon-compatible public status | Documented instance REST API | Native adapter |
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | Better article readability | Optional Trafilatura | Optional |
@@ -97,6 +98,39 @@ Write to a file:
     print(result.title)
     print(result.extraction_method)
     print(result.markdown)
+
+
+## MCP and HTTP/OpenAPI services
+
+The same extraction core can be exposed without duplicating adapter logic.
+
+Install the HTTP API:
+
+    python -m pip install -e ".[service]"
+    sharextract-api --host 127.0.0.1 --port 8787
+
+Endpoints:
+
+- GET /health
+- GET /v1/capabilities
+- POST /v1/extract
+- GET /docs for Swagger UI
+- GET /openapi.json
+
+Example request:
+
+    curl -X POST http://127.0.0.1:8787/v1/extract       -H "Content-Type: application/json"       -d '{"url":"https://bsky.app/profile/atproto.com/post/3molpqvzz3d2r"}'
+
+Install the MCP server:
+
+    python -m pip install -e ".[mcp]"
+    sharextract-mcp
+
+The default MCP transport is stdio. For a deployable Streamable HTTP endpoint:
+
+    sharextract-mcp --transport streamable-http --host 127.0.0.1 --port 8788 --json-response
+
+The MCP server exposes extract_public_url and list_sharextract_capabilities. Both service layers call the same sharextract.extract() function used by the CLI and Python API.
 
 ## Normalized result
 

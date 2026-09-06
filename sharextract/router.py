@@ -10,6 +10,7 @@ from .extractors import (
     ChatGPTShareExtractor,
     DeepSeekShareExtractor,
     GenericWebExtractor,
+    MastodonStatusExtractor,
     YtDlpExtractor,
 )
 from .extractors.base import Extractor
@@ -67,6 +68,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
         DeepSeekShareExtractor(client),
         ChatGPTShareExtractor(client),
         BlueskyPostExtractor(client),
+        MastodonStatusExtractor(client),
     ]
     media = [YtDlpExtractor(client)]
     web = [GenericWebExtractor(client)]
