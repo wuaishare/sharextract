@@ -42,3 +42,17 @@ jobs:
         run: |
           python -c "from sharextract.http_api import app; print(app.title)"
           python -c "from sharextract.mcp_server import mcp; print(mcp.name)"
+
+  browser-extra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install browser extra
+        run: python -m pip install -e ".[browser]"
+      - name: Run tests with browser package available
+        run: python -m unittest discover -s tests -v
+      - name: Import browser helper
+        run: python -c "from sharextract.browser import fetch_public_json_response; print(fetch_public_json_response.__name__)"

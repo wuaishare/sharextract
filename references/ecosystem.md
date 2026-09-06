@@ -12,6 +12,10 @@ It is a useful architectural reference for the AI-share niche. At the time Share
 
 Repository: https://github.com/hao0xffff/chat2md
 
+### Grok public share transport
+
+Grok exposes a first-party share-data route under grok.com/rest/app-chat, but Cloudflare may challenge standard HTTP clients. ShareXtract does not bypass that challenge. Its optional fallback opens the public x.com/i/grok/share page with a fresh anonymous browser context and extracts the structured GrokShare GraphQL response already requested by that public page.
+
 ### Claude public chat snapshots
 
 Claude public share pages can be protected by Cloudflare and may fail under ordinary automated page fetches, but the public frontend currently exposes an anonymous first-party GET /api/chat_snapshots/{uuid} JSON route for public snapshots. ShareXtract targets that structured route directly and does not require a logged-in Claude browser session.

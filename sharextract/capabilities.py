@@ -39,6 +39,13 @@ def get_capabilities() -> dict[str, Any]:
                 "built_in": True,
             },
             {
+                "name": "grok-share",
+                "platform": "grok",
+                "kind": "conversation",
+                "provenance": "public_json_or_anonymous_browser_graphql",
+                "built_in": True,
+            },
+            {
                 "name": "bluesky-atproto",
                 "platform": "bluesky",
                 "kind": "social_post",
@@ -73,6 +80,7 @@ def get_capabilities() -> dict[str, Any]:
             "yt_dlp": shutil.which("yt-dlp") is not None,
             "mcp": importlib.util.find_spec("mcp") is not None,
             "fastapi": importlib.util.find_spec("fastapi") is not None,
+            "playwright": importlib.util.find_spec("playwright") is not None,
         },
         "security_boundary": {
             "public_http_only": True,
@@ -83,5 +91,6 @@ def get_capabilities() -> dict[str, Any]:
             "bypasses_authentication": False,
             "solves_captchas": False,
             "bypasses_paywalls_or_waf": False,
+            "imports_browser_session_state": False,
         },
     }
