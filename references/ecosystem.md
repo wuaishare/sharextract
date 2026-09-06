@@ -12,6 +12,12 @@ It is a useful architectural reference for the AI-share niche. At the time Share
 
 Repository: https://github.com/hao0xffff/chat2md
 
+### Gemini public share RPC
+
+Gemini public share pages are snapshots readable by anyone with the link. The current public frontend retrieves the snapshot through an unauthenticated first-party BardChatUi batchexecute RPC. ShareXtract calls that RPC directly after resolving supported short links, avoiding browser automation while clearly labeling the route undocumented and unstable.
+
+Official sharing behavior: https://support.google.com/gemini/answer/13743730
+
 ## Media
 
 ### yt-dlp

@@ -6,7 +6,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.2 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.3 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -31,19 +31,20 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.1 coverage
+## Current v0.3 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
 | DeepSeek public share | First-party public JSON endpoint | Native adapter |
 | ChatGPT public share | Experimental first-party share JSON, then web fallback | Adapter + fallback |
+| Gemini public share | First-party anonymous public share RPC, then web fallback | Native adapter |
 | Bluesky public post | Documented AT Protocol public AppView + handle resolution | Native adapter |
 | Mastodon-compatible public status | Documented instance REST API | Native adapter |
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | Better article readability | Optional Trafilatura | Optional |
 | YouTube / TikTok / X / Instagram / Bilibili / Vimeo / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
-| Gemini / Claude / Grok / Doubao | Public-page adapter roadmap | Planned |
+| Claude / Grok / Doubao | Public-page adapter roadmap | Planned |
 | Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
@@ -99,6 +100,12 @@ Write to a file:
     print(result.extraction_method)
     print(result.markdown)
 
+
+### Gemini public shares
+
+ShareXtract recognizes g.co/gemini/share/{id}, gemini.google.com/share/{id}, and the newer share.gemini.google/{token} short links. The adapter resolves new short links to the canonical share ID, then calls the same unauthenticated first-party share RPC used by Gemini's public frontend. No Google account, cookies, Playwright, or browser session is required.
+
+The RPC is intentionally labeled first_party_undocumented_public_rpc: it is public and provider-owned, but it is not a documented external API contract. The generic public-page fallback remains available if Google changes the frontend implementation.
 
 ## MCP and HTTP/OpenAPI services
 

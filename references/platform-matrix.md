@@ -8,7 +8,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | ChatGPT share | first-party public share JSON, undocumented | generic public page | experimental native |
 | Bluesky post | documented public AT Protocol AppView + handle resolution | generic public page | native |
 | Mastodon status | documented public instance REST API | generic public page | native |
-| Gemini share | public page / structured hydration | generic public page | roadmap |
+| Gemini share | first-party anonymous public share RPC | generic public page | native, undocumented |
 | Claude share | public snapshot page | generic public page | roadmap |
 | Grok share | public share page | generic public page | roadmap |
 | Doubao share | public page / first-party public data when stable | browser/public HTML | roadmap |

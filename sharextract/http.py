@@ -119,12 +119,24 @@ class SafeHttpClient:
         self.user_agent = user_agent
         self._opener = urllib.request.build_opener(_SafeRedirectHandler())
 
-    def get(self, url: str, headers: dict[str, str] | None = None) -> HttpResponse:
+    def _request(
+        self,
+        url: str,
+        *,
+        method: str,
+        headers: dict[str, str] | None = None,
+        data: bytes | None = None,
+    ) -> HttpResponse:
         validate_public_url(url)
         request_headers = {"User-Agent": self.user_agent, "Accept": "*/*"}
         if headers:
             request_headers.update(headers)
-        req = urllib.request.Request(url, headers=request_headers, method="GET")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers=request_headers,
+            method=method,
+        )
         try:
             with self._opener.open(req, timeout=self.timeout) as resp:
                 final_url = resp.geturl()
@@ -137,6 +149,46 @@ class SafeHttpClient:
                     content_type=resp.headers.get("Content-Type", ""),
                     body=body,
                 )
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+            raise FetchError(f"{method} failed for {url}: {exc}") from exc
+
+    def get(self, url: str, headers: dict[str, str] | None = None) -> HttpResponse:
+        return self._request(url, method="GET", headers=headers)
+
+    def post_form(
+        self,
+        url: str,
+        fields: dict[str, str],
+        headers: dict[str, str] | None = None,
+    ) -> HttpResponse:
+        request_headers = {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        }
+        if headers:
+            request_headers.update(headers)
+        data = urllib.parse.urlencode(fields).encode("utf-8")
+        return self._request(
+            url,
+            method="POST",
+            headers=request_headers,
+            data=data,
+        )
+
+    def resolve(
+        self,
+        url: str,
+        headers: dict[str, str] | None = None,
+    ) -> str:
+        validate_public_url(url)
+        request_headers = {"User-Agent": self.user_agent, "Accept": "*/*"}
+        if headers:
+            request_headers.update(headers)
+        req = urllib.request.Request(url, headers=request_headers, method="GET")
+        try:
+            with self._opener.open(req, timeout=self.timeout) as resp:
+                final_url = resp.geturl()
+                validate_public_url(final_url)
+                return final_url
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
             raise FetchError(f"GET failed for {url}: {exc}") from exc
 
