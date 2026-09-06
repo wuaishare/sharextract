@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.20 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.21 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.20 coverage
+## Current v0.21 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -61,6 +61,7 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | TikTok public video | Documented public oEmbed | Native adapter |
 | Reddit public post/thread | Documented public oEmbed + standard Atom thread RSS enhancement | Native adapter + built-in standard |
 | Telegram public channel/group post | Official anonymous Post Widget HTML | Native adapter |
+| Pinterest public Pin | Standard Open Graph on anonymous public Pin HTML | Native adapter |
 | Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Xiaohongshu public note | Current official share token/short link → first-party SSR initial state | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
@@ -73,6 +74,16 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Kuaishou public atlas/image post | Current official public share page → isolated anonymous browser DOM | Native route + optional browser |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Pinterest public Pins
+
+Pinterest public Pin pages expose enough standard Open Graph metadata in anonymous static HTML that ShareXtract does not need Pinterest internal PWS state, historical undocumented pidgets endpoints, API tokens, or browser rendering.
+
+The dedicated Pinterest adapter normalizes the requested Pin ID, title, description, image URL and dimensions, updated time, source link, and Pinterest-declared metadata. Public images are returned directly from i.pinimg.com when present.
+
+Pinterest has one important identity quirk: a public Pin page may declare both link rel=canonical and og:url pointing to a different Pin ID, and fetching that declared Pin can return different title/image content. ShareXtract therefore does not treat Pinterest's declared canonical as the current Pin identity. The requested Pin ID is normalized to https://www.pinterest.com/pin/{id}/ and remains the dedupe identity; Pinterest's declared canonical/OG URL is recorded separately with a mismatch flag when IDs differ.
+
+This keeps the adapter standards-based while avoiding false deduplication across Pinterest's internal content aggregation/canonicalization behavior.
 
 ### Telegram public channel/group posts
 

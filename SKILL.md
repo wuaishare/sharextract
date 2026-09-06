@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## Pinterest public Pins
+
+For direct public Pinterest Pin URLs, use the native Pinterest adapter. It reads only standard Open Graph metadata from anonymous public HTML and must not parse Pinterest internal PWS state, call undocumented pidgets endpoints, require API tokens, or use a browser. Keep the requested Pin ID as canonical identity even if Pinterest declares a different canonical/og:url Pin ID; record the declared URL separately and mark the mismatch rather than deduplicating across different Pins.
+
 ## Telegram public posts
 
 For public Telegram channel/group message URLs such as t.me/channel/123, use the native Telegram adapter. It reads the official anonymous Post Widget HTML and normalizes text, author, timestamp, views, reactions, link-preview metadata, and public photos. Do not call the widget's auth/upload API configuration, require Bot Tokens, or export temporary audio/video stream URLs.

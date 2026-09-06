@@ -283,6 +283,26 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "pinterest-pin",
+        "platform": "pinterest",
+        "kind": "image_post",
+        "provenance": "standard_open_graph_on_public_pin_page",
+        "built_in": True,
+        "priority": 37,
+        "stability": "standard",
+        "expected_methods": ["standard_open_graph_pinterest_pin"],
+        "fixture_ids": ["pinterest-pin-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.pinterest.com/pin/444941638158153317/",
+            "platform": "pinterest",
+            "methods": ["standard_open_graph_pinterest_pin"],
+        },
+    },
+    {
         "name": "bilibili-video",
         "platform": "bilibili",
         "kind": "video",

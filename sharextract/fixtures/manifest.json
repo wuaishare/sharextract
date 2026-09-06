@@ -169,6 +169,12 @@
       "adapter": "telegram-post",
       "path": "telegram-post-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "pinterest-pin-contract",
+      "adapter": "pinterest-pin",
+      "path": "pinterest-pin-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.20 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.21 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.20 能力
+## 当前 v0.21 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -142,6 +142,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 | TikTok 公共视频 | 有文档的公开 oEmbed | Native |
 | Reddit 公共帖子 / Thread | 官方公开 oEmbed + 标准 Atom Thread RSS 增强 | Native + Built-in Standard |
 | Telegram 公共频道 / 群组帖子 | 官方匿名 Post Widget HTML | Native |
+| Pinterest 公开 Pin | 匿名公开 Pin HTML 的标准 Open Graph | Native |
 | 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | 小红书公开笔记 | 当前官方分享 Token / 短链 → 首方 SSR initial state | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
@@ -348,6 +349,16 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### Pinterest 公开 Pin
+
+Pinterest 的公开 Pin 页面在匿名静态 HTML 中已经直接提供足够的标准 Open Graph metadata，因此 ShareXtract 不需要读取 Pinterest 内部 PWS 状态、不需要历史未文档的 pidgets 接口、不需要 API Token，也不需要 Browser。
+
+专用 Pinterest Adapter 会归一化请求 Pin ID、标题、描述、图片及宽高、更新时间、原始来源外链，以及 Pinterest 自己声明的 metadata；存在公开图片时直接返回 i.pinimg.com 图片 URL。
+
+Pinterest 有一个非常特殊的身份语义：某些公开 Pin 页面里的 link rel=canonical 与 og:url 会指向另一个 Pin ID，而实际访问那个被声明的 Pin 时，标题、图片、更新时间甚至内容都可能不同。因此 ShareXtract 不会把 Pinterest 声明的 canonical 当成当前 Pin 的去重身份。
+
+ShareXtract 始终以用户请求的 Pin ID 规范化成 https://www.pinterest.com/pin/{id}/ 作为稳定 identity；Pinterest 声明的 canonical / OG URL 只单独记录在 metadata，如果 ID 不一致则明确标记 mismatch。这样既保持标准公开 metadata 优先，也避免 Pinterest 内部内容聚合语义造成错误去重。
 
 ### Telegram 公共频道 / 群组帖子
 
@@ -787,6 +798,7 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 当前重点包括：
 
 - Reddit oEmbed / Atom Thread 路线的协议漂移监控与更多公开样本；
+- Pinterest Open Graph / 声明 canonical 漂移监控与更多公开 Pin 样本；
 - 快手图集 / 图片作品 Browser 路线的协议漂移监控与更多样本；
 - 已发布未文档 Adapter 的协议漂移监控与 contract fixture 扩充；
 - 更多有高价值公开协议、oEmbed、RSS / Feed、字幕 / Transcript 数据源；

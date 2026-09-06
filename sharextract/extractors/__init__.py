@@ -12,6 +12,7 @@ from .kuaishou import KuaishouAtlasExtractor, KuaishouVideoExtractor
 from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
 from .oembed import TikTokOEmbedExtractor, VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
+from .pinterest import PinterestPinExtractor
 from .qwen import QwenShareExtractor
 from .reddit import RedditPostExtractor
 from .telegram import TelegramPostExtractor
@@ -39,6 +40,7 @@ __all__ = [
     "YouTubeOEmbedExtractor",
     "TikTokOEmbedExtractor",
     "VimeoOEmbedExtractor",
+    "PinterestPinExtractor",
     "QwenShareExtractor",
     "RedditPostExtractor",
     "TelegramPostExtractor",

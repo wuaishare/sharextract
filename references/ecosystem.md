@@ -162,3 +162,8 @@ Reddit's anonymous .json post surface can now return 403 for public threads. Sha
 ### Telegram Post Widget
 
 Telegram officially supports embedding messages from public channels and groups through its Post Widget. ShareXtract fetches the anonymous t.me embed representation and parses only the already-public widget HTML. This exposes message text, author/channel, timestamp, views, reactions, link-preview metadata and public photos without Bot Tokens, login cookies, OAuth, or browser automation. Widget auth/upload configuration and temporary audio/video stream details are intentionally excluded.
+
+
+### Pinterest Open Graph Pin surface
+
+Pinterest public Pin pages expose standard Open Graph title, description, image, dimensions, updated time, source link and Pin type in anonymous static HTML. ShareXtract intentionally ignores internal PWS bootstrap state and undocumented pidgets APIs. Pinterest may declare a canonical/og:url Pin ID that differs from the requested Pin and can resolve to different content; therefore the requested Pin ID remains ShareXtract's stable identity while declared canonical metadata is recorded separately with a mismatch flag.
