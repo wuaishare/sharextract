@@ -174,6 +174,36 @@ class SafeHttpClient:
             data=data,
         )
 
+    def post_json(
+        self,
+        url: str,
+        payload,
+        headers: dict[str, str] | None = None,
+    ):
+        request_headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        if headers:
+            request_headers.update(headers)
+        data = json.dumps(
+            payload,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        response = self._request(
+            url,
+            method="POST",
+            headers=request_headers,
+            data=data,
+        )
+        try:
+            return response, json.loads(response.text)
+        except json.JSONDecodeError as exc:
+            raise FetchError(
+                f"Expected JSON from {url}, got {response.content_type or 'unknown type'}."
+            ) from exc
+
     def resolve(
         self,
         url: str,

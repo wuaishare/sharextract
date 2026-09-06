@@ -46,6 +46,20 @@ def get_capabilities() -> dict[str, Any]:
                 "built_in": True,
             },
             {
+                "name": "kimi-share",
+                "platform": "kimi",
+                "kind": "conversation",
+                "provenance": "first_party_undocumented",
+                "built_in": True,
+            },
+            {
+                "name": "qwen-share",
+                "platform": "qwen",
+                "kind": "conversation",
+                "provenance": "first_party_undocumented",
+                "built_in": True,
+            },
+            {
                 "name": "bluesky-atproto",
                 "platform": "bluesky",
                 "kind": "social_post",

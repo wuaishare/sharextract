@@ -1,3 +1,5 @@
+English | [简体中文](README.zh-CN.md)
+
 # ShareXtract
 
 **Protocol-first public share content extraction for AI chats, social posts, media, and the open web.**
@@ -6,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.5 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.6 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -27,11 +29,11 @@ ShareXtract prefers methods in this order:
 3. **JSON-LD / OpenGraph / structured HTML**
 4. **Specialized open-source adapter**, for example yt-dlp in metadata-only mode
 5. **Readable static HTML**, optionally enhanced by Trafilatura
-6. **Public browser rendering** as a future/optional last resort
+6. **Public browser rendering** as an optional last resort
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.5 coverage
+## Current v0.6 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -39,6 +41,8 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | ChatGPT public share | Experimental first-party share JSON, then web fallback | Adapter + fallback |
 | Claude public share | First-party anonymous chat snapshot JSON | Native adapter |
 | Grok public share | Direct public share-data JSON when reachable; anonymous X GrokShare GraphQL browser transport otherwise | Native + optional browser |
+| Qwen public share | First-party anonymous share JSON API; final answer phases only | Native adapter |
+| Kimi public share | First-party anonymous GetChatShare JSON API | Native adapter |
 | Gemini public share | First-party anonymous public share RPC, then web fallback | Native adapter |
 | Bluesky public post | Documented AT Protocol public AppView + handle resolution | Native adapter |
 | Mastodon-compatible public status | Documented instance REST API | Native adapter |
@@ -111,6 +115,14 @@ Write to a file:
     print(result.markdown)
 
 
+### Qwen public shares
+
+ShareXtract reads chat.qwen.ai/s/{id} through Qwen's anonymous first-party /api/v2/chats/share/{id} JSON route. Qwen may expose internal reasoning/thinking fields alongside the public answer; ShareXtract intentionally excludes those fields and normalizes only public user content, final phase=answer blocks, files, model metadata, and timestamps.
+
+### Kimi public shares
+
+Kimi previously embedded share data in server-rendered hydration state, but the current site loads a generic application shell. ShareXtract now calls the same anonymous first-party ChatService/GetChatShare JSON route used by the public share page. The request body contains only the public share ID, so no Kimi login, copied cookies, or browser runtime is required.
+
 ### Grok public shares
 
 ShareXtract first attempts Grok's first-party public share-data JSON route with the standard HTTP client. If Grok returns a Cloudflare challenge, ShareXtract does not bypass it. When the optional browser extra is installed, it instead opens the anonymous public X Grok share page and reads only the first-party GrokShare GraphQL JSON response that the page itself requests.
@@ -176,7 +188,7 @@ ShareXtract is public-content-first:
 - redirects are revalidated to reduce SSRF risk;
 - responses are size-bounded;
 - media adapters are metadata-only by default;
-- no cookies, account sessions, CAPTCHA solving, stealth browsers, signature bypass, or credential collection in the core project.
+- no imported/copied cookies, logged-in account sessions, CAPTCHA solving, WAF bypass, private signatures, or credential collection in the core project.
 
 Platform terms, copyright, privacy rights, robots directives, and local law still apply. Being technically reachable does not grant redistribution rights.
 

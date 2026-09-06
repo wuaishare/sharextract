@@ -12,6 +12,14 @@ It is a useful architectural reference for the AI-share niche. At the time Share
 
 Repository: https://github.com/hao0xffff/chat2md
 
+### Qwen public share JSON
+
+Qwen public chat shares expose an anonymous first-party GET /api/v2/chats/share/{id} JSON route. The payload can include final answers, model/file metadata, message-tree relationships, and internal reasoning-related fields. ShareXtract exports only public final answer content and intentionally omits internal reasoning/thinking fields.
+
+### Kimi public GetChatShare
+
+Kimi formerly exposed share content through server-rendered hydration state. The current public frontend loads the snapshot through an anonymous first-party POST /apiv2/kimi.gateway.chat.v1.ChatService/GetChatShare request whose body contains only the public share_id. ShareXtract follows the current structured route rather than relying on stale SSR markers.
+
 ### Grok public share transport
 
 Grok exposes a first-party share-data route under grok.com/rest/app-chat, but Cloudflare may challenge standard HTTP clients. ShareXtract does not bypass that challenge. Its optional fallback opens the public x.com/i/grok/share page with a fresh anonymous browser context and extracts the structured GrokShare GraphQL response already requested by that public page.

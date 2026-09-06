@@ -9,6 +9,8 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Bluesky post | documented public AT Protocol AppView + handle resolution | generic public page | native |
 | Mastodon status | documented public instance REST API | generic public page | native |
 | Gemini share | first-party anonymous public share RPC | generic public page | native, undocumented |
+| Qwen share | first-party anonymous share JSON; final answer blocks only | generic public page | native, undocumented |
+| Kimi share | first-party anonymous GetChatShare JSON | generic public page | native, undocumented |
 | Claude share | first-party anonymous chat snapshot JSON | generic public page | native, undocumented |
 | Grok share | standard public share-data JSON; anonymous X GrokShare browser transport when challenged | generic public page | native + optional browser |
 | Doubao share | public page / first-party public data when stable | browser/public HTML | roadmap |

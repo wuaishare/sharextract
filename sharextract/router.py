@@ -12,8 +12,10 @@ from .extractors import (
     DeepSeekShareExtractor,
     GenericWebExtractor,
     GrokShareExtractor,
+    KimiShareExtractor,
     GeminiShareExtractor,
     MastodonStatusExtractor,
+    QwenShareExtractor,
     YtDlpExtractor,
 )
 from .extractors.base import Extractor
@@ -73,6 +75,8 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
         ClaudeShareExtractor(client),
         GeminiShareExtractor(client),
         GrokShareExtractor(client),
+        KimiShareExtractor(client),
+        QwenShareExtractor(client),
         BlueskyPostExtractor(client),
         MastodonStatusExtractor(client),
     ]
