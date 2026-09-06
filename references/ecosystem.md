@@ -12,6 +12,10 @@ It is a useful architectural reference for the AI-share niche. At the time Share
 
 Repository: https://github.com/hao0xffff/chat2md
 
+### Claude public chat snapshots
+
+Claude public share pages can be protected by Cloudflare and may fail under ordinary automated page fetches, but the public frontend currently exposes an anonymous first-party GET /api/chat_snapshots/{uuid} JSON route for public snapshots. ShareXtract targets that structured route directly and does not require a logged-in Claude browser session.
+
 ### Gemini public share RPC
 
 Gemini public share pages are snapshots readable by anyone with the link. The current public frontend retrieves the snapshot through an unauthenticated first-party BardChatUi batchexecute RPC. ShareXtract calls that RPC directly after resolving supported short links, avoiding browser automation while clearly labeling the route undocumented and unstable.

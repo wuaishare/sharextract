@@ -9,7 +9,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Bluesky post | documented public AT Protocol AppView + handle resolution | generic public page | native |
 | Mastodon status | documented public instance REST API | generic public page | native |
 | Gemini share | first-party anonymous public share RPC | generic public page | native, undocumented |
-| Claude share | public snapshot page | generic public page | roadmap |
+| Claude share | first-party anonymous chat snapshot JSON | generic public page | native, undocumented |
 | Grok share | public share page | generic public page | roadmap |
 | Doubao share | public page / first-party public data when stable | browser/public HTML | roadmap |
 | YouTube / Vimeo / supported video hosts | official/oEmbed where available; yt-dlp metadata | generic public page | optional |

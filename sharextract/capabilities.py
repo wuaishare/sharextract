@@ -25,6 +25,13 @@ def get_capabilities() -> dict[str, Any]:
                 "built_in": True,
             },
             {
+                "name": "claude-share",
+                "platform": "claude",
+                "kind": "conversation",
+                "provenance": "first_party_undocumented",
+                "built_in": True,
+            },
+            {
                 "name": "gemini-share",
                 "platform": "gemini",
                 "kind": "conversation",

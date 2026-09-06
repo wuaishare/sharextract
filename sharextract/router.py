@@ -8,6 +8,7 @@ from sharextract.models import ExtractedContent
 from .extractors import (
     BlueskyPostExtractor,
     ChatGPTShareExtractor,
+    ClaudeShareExtractor,
     DeepSeekShareExtractor,
     GenericWebExtractor,
     GeminiShareExtractor,
@@ -68,6 +69,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
     native: list[Extractor] = [
         DeepSeekShareExtractor(client),
         ChatGPTShareExtractor(client),
+        ClaudeShareExtractor(client),
         GeminiShareExtractor(client),
         BlueskyPostExtractor(client),
         MastodonStatusExtractor(client),
