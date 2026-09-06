@@ -22,6 +22,8 @@ from .extractors import (
     YouTubeOEmbedExtractor,
     QwenShareExtractor,
     YtDlpExtractor,
+    ZhihuAnswerExtractor,
+    ZhihuArticleExtractor,
 )
 from .extractors.base import Extractor
 
@@ -90,6 +92,8 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
             YouTubeOEmbedExtractor(client),
             VimeoOEmbedExtractor(client),
             BilibiliVideoExtractor(client),
+            ZhihuAnswerExtractor(client),
+            ZhihuArticleExtractor(client),
         ],
         key=lambda extractor: extractor.priority,
     )

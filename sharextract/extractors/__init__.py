@@ -12,6 +12,7 @@ from .mastodon import MastodonStatusExtractor
 from .oembed import VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
 from .qwen import QwenShareExtractor
 from .ytdlp import YtDlpExtractor
+from .zhihu import ZhihuAnswerExtractor, ZhihuArticleExtractor
 
 __all__ = [
     "BilibiliVideoExtractor",
@@ -30,4 +31,6 @@ __all__ = [
     "VimeoOEmbedExtractor",
     "QwenShareExtractor",
     "YtDlpExtractor",
+    "ZhihuAnswerExtractor",
+    "ZhihuArticleExtractor",
 ]

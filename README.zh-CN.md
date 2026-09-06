@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.11 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.12 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.11 能力
+## 当前 v0.12 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -140,9 +140,11 @@ ShareXtract 默认按下面的优先级寻找数据：
 | YouTube 公共视频 | 有文档的公开 oEmbed | Native |
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
+| 知乎公开回答 | 匿名首方 Tardis SSR Reader；不使用签名 API / Cookie | Native |
+| 知乎专栏文章 | 公共页面内嵌 initial state；匿名 Tardis SSR fallback | Native |
 | TikTok / Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
-| 小红书 / 抖音 / 微博 / 知乎 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
+| 小红书 / 抖音 / 微博 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -281,6 +283,22 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### 知乎公开回答与专栏文章
+
+知乎的公开回答与专栏文章目前走的是两套不同公开内容面，因此 ShareXtract 将它们拆成两个独立 Native Adapter，并分别纳入 Health，而不是做成一个笼统的“知乎解析器”。
+
+**公开回答**：普通 question/{qid}/answer/{aid} 页面以及 /api/v4/answers/{id} 当前可能对匿名普通 HTTP 返回 403。ShareXtract 不生成知乎私有 x-zse 签名、不读取或复制 d_c0、不导入账号 Cookie。它转而读取知乎自己匿名公开返回的：
+
+    https://www.zhihu.com/tardis/zm/ans/{answer_id}
+
+该 SSR Reader 当前会在 window.g_initialProps.renderHtml 中直接暴露公开回答正文、问题标题/说明、作者、发布时间以及赞同/评论/收藏等公开统计。
+
+**知乎专栏文章**：优先读取匿名公开 zhuanlan.zhihu.com/p/{id} 页面中的 js-initialData -> initialState.entities.articles[id]，获得完整正文、作者、Topics、创建/更新时间、公开统计与图片；如果该 hydration entity 缺失，再 fallback 到：
+
+    https://www.zhihu.com/tardis/zm/art/{article_id}
+
+两条路线都会在导出富文本时剔除 script/style 等跟踪代码，并明确标记为“首方公开但未文档结构”。整个流程不需要登录、Cookie、私有签名、验证码破解或浏览器账号态。
 
 ### Timed Text、字幕与 Transcript
 
@@ -451,6 +469,7 @@ sharextract-api --host 127.0.0.1 --port 8787
 
 - `GET /health`
 - `GET /v1/capabilities`
+- `GET /v1/health/adapters`
 - `POST /v1/extract`
 - `GET /docs`
 - `GET /openapi.json`

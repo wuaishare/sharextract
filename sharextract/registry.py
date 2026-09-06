@@ -243,6 +243,52 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "zhihu-answer",
+        "platform": "zhihu",
+        "kind": "answer",
+        "provenance": "first_party_public_ssr",
+        "built_in": True,
+        "priority": 35,
+        "stability": "first_party_undocumented",
+        "expected_methods": ["first_party_public_tardis_ssr_json"],
+        "fixture_ids": ["zhihu-answer-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.zhihu.com/question/19550225/answer/1993418784334177262",
+            "platform": "zhihu",
+            "methods": ["first_party_public_tardis_ssr_json"],
+        },
+    },
+    {
+        "name": "zhihu-article",
+        "platform": "zhihu",
+        "kind": "article",
+        "provenance": "first_party_embedded_state_with_public_ssr_fallback",
+        "built_in": True,
+        "priority": 36,
+        "stability": "first_party_undocumented",
+        "expected_methods": [
+            "first_party_embedded_initial_state",
+            "first_party_public_tardis_ssr_json",
+        ],
+        "fixture_ids": ["zhihu-article-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://zhuanlan.zhihu.com/p/2062463440527136754",
+            "platform": "zhihu",
+            "methods": [
+                "first_party_embedded_initial_state",
+                "first_party_public_tardis_ssr_json",
+            ],
+        },
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

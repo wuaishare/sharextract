@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.11 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.12 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.11 coverage
+## Current v0.12 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -59,11 +59,23 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | YouTube public video | Documented public oEmbed | Native adapter |
 | Vimeo public video | Documented public oEmbed | Native adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
+| Zhihu public answer | Anonymous first-party Tardis SSR reader; no signed API/cookies | Native adapter |
+| Zhihu Zhuanlan article | Embedded first-party initial state; anonymous Tardis SSR fallback | Native adapter |
 | TikTok / Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
-| Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
+| Xiaohongshu / Douyin / Weibo / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Zhihu public answers and articles
+
+Zhihu uses different public surfaces for answers and Zhuanlan articles, so ShareXtract keeps them as two independently monitored native adapters.
+
+For public answers, the ordinary question/answer page and /api/v4/answers/{id} can reject anonymous HTTP with 403. ShareXtract does not generate Zhihu's private x-zse signing headers, copy d_c0, or reuse account cookies. Instead, it reads the anonymous first-party Tardis SSR reader at www.zhihu.com/tardis/zm/ans/{answer_id}, which currently exposes the public answer body plus question, author, timestamp, and public interaction counts in window.g_initialProps.
+
+For Zhuanlan articles, ShareXtract first reads js-initialData -> initialState.entities.articles[id] from the anonymous public article page. This exposes full rich-text content, author, topics, created/updated timestamps, public statistics, and image references. If that richer hydration entity is unavailable, the anonymous tardis/zm/art/{id} reader is used as a lower-fidelity fallback.
+
+Both routes strip script/style tracking content from exported rich text and remain explicitly labeled undocumented first-party public structures. They require no login, copied cookies, private signatures, CAPTCHA solving, or browser session state.
 
 ### Timed text, captions, and transcripts
 
@@ -214,6 +226,7 @@ Endpoints:
 
 - GET /health
 - GET /v1/capabilities
+- GET /v1/health/adapters
 - POST /v1/extract
 - GET /docs for Swagger UI
 - GET /openapi.json

@@ -21,7 +21,8 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Xiaohongshu | public page only unless a permitted public endpoint exists | public browser adapter | roadmap |
 | Douyin / TikTok | public metadata / yt-dlp where supported | generic public page | optional |
 | Weibo | public page / permitted public data | generic public page | roadmap |
-| Zhihu | structured public article/answer page | generic public page | generic |
+| Zhihu answer | anonymous first-party Tardis SSR reader | generic public page | native, undocumented |
+| Zhihu Zhuanlan article | embedded first-party initial state | anonymous Tardis SSR / generic public page | native, undocumented |
 | News/blog/article | oEmbed + JSON-LD + OG + article HTML | Trafilatura | generic |
 | RSS / Atom feed | open-standard XML feed normalization | none | built-in standard |
 | WebVTT / SRT / TTML | open timed-text document normalization | generic page metadata for track discovery | built-in standard |

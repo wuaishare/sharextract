@@ -109,6 +109,18 @@
       "adapter": "timed-text",
       "path": "timed-text-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "zhihu-answer-contract",
+      "adapter": "zhihu-answer",
+      "path": "zhihu-answer-contract.json",
+      "scope": "route_contract"
+    },
+    {
+      "id": "zhihu-article-contract",
+      "adapter": "zhihu-article",
+      "path": "zhihu-article-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

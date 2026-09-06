@@ -123,3 +123,7 @@ Repository: https://github.com/Johnserf-Seed/f2
 ## Principle
 
 Upstream tools solve different layers. ShareXtract's value is to choose among them and return one stable output contract with provenance, not to pretend every site exposes the same kind of API.
+
+### Zhihu public SSR and hydration
+
+Zhihu answers and Zhuanlan articles expose different anonymous public structures. Answer extraction uses the first-party Tardis zm/ans/{id} SSR reader rather than the anonymous-403 API/signing path. Zhuanlan extraction prefers the public page's embedded initial-state article entity, with the Tardis zm/art/{id} reader as fallback. ShareXtract deliberately does not implement private x-zse signing, d_c0 cookie acquisition, or logged-in session reuse.
