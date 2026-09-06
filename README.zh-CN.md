@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.8 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.9 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -115,7 +115,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.8 能力
+## 当前 v0.9 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -130,6 +130,8 @@ ShareXtract 默认按下面的优先级寻找数据：
 | Mastodon 公共状态 | 实例公开 REST API | Native |
 | 任意公开 JSON URL | Safe HTTP + JSON 归一化 | Generic |
 | 新闻 / 博客 / 普通文章 | oEmbed / JSON-LD / OG / HTML | Generic |
+| RSS / Atom Feed | 按 XML 标准归一化 Feed、Entry、Enclosure | Built-in Standard |
+| 声明 Feed 的普通网页 | 自动发现标准 RSS/Atom `<link rel=alternate>` | Generic metadata |
 | 更强文章正文提取 | Trafilatura | Optional |
 | X / Twitter 公共帖子 | 有文档的公开 oEmbed | Native |
 | YouTube 公共视频 | 有文档的公开 oEmbed | Native |
@@ -276,6 +278,14 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### RSS / Atom 与 Feed Discovery
+
+ShareXtract 现在原生识别 RSS 2.0、RSS 1.0/RDF 与 Atom。识别依据是 HTTP Content-Type 与 XML 根元素，而不是猜测 URL 是否以 `.xml`、`/feed/` 结尾，因此任意路径上的真实 Feed 都可以进入统一归一化流程。
+
+结果会包含 Feed 标题、主页、Feed URL、更新时间、语言、作者以及标准化 `entries`；每个 Entry 包含标题、URL、作者、发布时间/更新时间、摘要、正文、分类与 enclosure/media。普通 HTML 页面若声明 RSS/Atom，也会在 `metadata.syndication_feeds` 中直接暴露订阅入口，而且不会为“发现 Feed”额外再发一次请求。
+
+出于安全边界，包含 DTD / ENTITY 声明的 XML Feed 会直接拒绝，避免实体展开类风险。
 
 ## 安装
 
@@ -654,7 +664,6 @@ Issues、PR、平台样本、协议变化报告都欢迎提交。
 - 抖音 / TikTok；
 - 小红书；
 - 快手；
-- RSS / Atom；
 - transcript / subtitle；
 - Adapter 健康矩阵与 fixture corpus。
 

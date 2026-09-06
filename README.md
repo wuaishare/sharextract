@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.8 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.9 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 ## Why this exists
 
@@ -33,7 +33,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.8 coverage
+## Current v0.9 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -48,6 +48,8 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Mastodon-compatible public status | Documented instance REST API | Native adapter |
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
+| RSS / Atom feeds | Open-standard XML normalization; feed-entry/media extraction | Built-in standard |
+| Web pages with declared feeds | Discover `<link rel=alternate>` RSS/Atom endpoints | Generic metadata |
 | Better article readability | Optional Trafilatura | Optional |
 | X / Twitter public post | Documented public oEmbed | Native adapter |
 | YouTube public video | Documented public oEmbed | Native adapter |
@@ -58,6 +60,12 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### RSS / Atom feeds and discovery
+
+ShareXtract recognizes RSS 2.0, RSS 1.0/RDF, and Atom from the HTTP response and XML root rather than guessing from URL suffixes. Feed title, home/feed URLs, timestamps, authors, entries, summaries/full text, categories, and enclosure/media references are normalized into the same result contract.
+
+Normal HTML pages also expose declared syndication endpoints through `metadata.syndication_feeds` when they include standard `<link rel="alternate" type="application/rss+xml|application/atom+xml">` elements. No second request is made just to discover those links. XML containing DTD/entity declarations is rejected.
 
 ## Install
 

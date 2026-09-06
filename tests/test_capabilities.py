@@ -14,6 +14,7 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("youtube-oembed", names)
         self.assertIn("vimeo-oembed", names)
         self.assertIn("bilibili-video", names)
+        self.assertIn("rss-atom", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

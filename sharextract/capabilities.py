@@ -117,6 +117,14 @@ def get_capabilities() -> dict[str, Any]:
                 "available": shutil.which("yt-dlp") is not None,
             },
             {
+                "name": "rss-atom",
+                "platform": "syndication",
+                "kind": "feed",
+                "provenance": "open_standard",
+                "built_in": True,
+                "integrated_in": "generic-web",
+            },
+            {
                 "name": "generic-web",
                 "platform": "web",
                 "kind": "webpage",

@@ -23,6 +23,7 @@ This matrix describes the preferred path, not a promise that every link will alw
 | Weibo | public page / permitted public data | generic public page | roadmap |
 | Zhihu | structured public article/answer page | generic public page | generic |
 | News/blog/article | oEmbed + JSON-LD + OG + article HTML | Trafilatura | generic |
+| RSS / Atom feed | open-standard XML feed normalization | none | built-in standard |
 | Arbitrary JSON endpoint | public JSON | none | generic |
 
 ## Stability labels

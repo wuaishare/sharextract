@@ -1,6 +1,6 @@
 ---
 name: sharextract
-description: Extract normalized content from public share URLs and web pages using a protocol-first fallback ladder. Use for public AI chat shares, social/media links, articles, oEmbed pages, public JSON endpoints, or when an agent needs the highest-fidelity public content without bypassing authentication, CAPTCHAs, paywalls, or access controls.
+description: Extract normalized content from public share URLs, RSS/Atom feeds, and web pages using a protocol-first fallback ladder. Use for public AI chat shares, social/media links, RSS/Atom feeds, articles, oEmbed pages, public JSON endpoints, or when an agent needs the highest-fidelity public content without bypassing authentication, CAPTCHAs, paywalls, or access controls.
 ---
 
 # ShareXtract
@@ -12,13 +12,13 @@ Extract public shared content with the highest-fidelity, lowest-cost method avai
 1. Treat the supplied URL as public input only. Never reuse browser cookies, session tokens, credentials, or private connector data unless the user explicitly requests an authenticated workflow and the platform permits it.
 2. Run: python -m sharextract "URL" --format json
 3. Prefer the result with the strongest provenance:
-   - documented public API or oEmbed;
+   - documented public API, open syndication standards (RSS/Atom), or oEmbed;
    - first-party public JSON/hydration data;
    - JSON-LD/OpenGraph/structured HTML;
    - specialized public-content extractor such as yt-dlp;
    - readable static HTML;
    - browser rendering only when a public page genuinely requires JavaScript.
-4. Inspect extraction_method, confidence, warnings, canonical_url, and metadata before using the result downstream.
+4. Inspect extraction_method, confidence, warnings, canonical_url, and metadata before using the result downstream. For feeds, use metadata.feed.entries; for ordinary pages, metadata.syndication_feeds may expose declared RSS/Atom endpoints.
 5. Preserve the original meaning and media references. Do not silently invent missing text, authorship, timestamps, or platform metadata.
 6. If a specialized route fails, allow the router to fall back and report the failed route in warnings.
 7. Stop rather than bypass login walls, CAPTCHAs, paywalls, WAF challenges, private links, or other access controls.

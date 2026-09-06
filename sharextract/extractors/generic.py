@@ -7,6 +7,7 @@ from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import urljoin, urlsplit
 
+from sharextract.feeds import try_extract_syndication_feed
 from sharextract.models import ExtractedContent
 
 from .base import Extractor, ExtractorError
@@ -155,6 +156,15 @@ class GenericWebExtractor(Extractor):
         if "json" in ctype or response.text.lstrip().startswith(("{", "[")):
             return _extract_json_document(url, response.url, response.text)
 
+        feed_result = try_extract_syndication_feed(
+            url,
+            response.url,
+            response.content_type,
+            response.text,
+        )
+        if feed_result is not None:
+            return feed_result
+
         parser = _PageParser()
         try:
             parser.feed(response.text)
@@ -230,6 +240,10 @@ class GenericWebExtractor(Extractor):
                 "site_name": parser.meta.get("og:site_name", ""),
                 "oembed": {k: v for k, v in oembed.items() if k != "html"},
                 "jsonld_types": sorted(_jsonld_types(jsonld)),
+                "syndication_feeds": _collect_syndication_feeds(
+                    parser,
+                    response.url,
+                ),
             },
             warnings=warnings,
         )
@@ -251,6 +265,38 @@ class GenericWebExtractor(Extractor):
             if isinstance(payload, dict):
                 return payload
         return {}
+
+
+def _collect_syndication_feeds(
+    parser: _PageParser,
+    base_url: str,
+) -> list[dict[str, str]]:
+    supported = {
+        "application/rss+xml": "rss",
+        "application/atom+xml": "atom",
+    }
+    result: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for link in parser.links:
+        rel_tokens = {
+            token.strip().lower()
+            for token in link.get("rel", "").split()
+            if token.strip()
+        }
+        if "alternate" not in rel_tokens:
+            continue
+        feed_type = supported.get(link.get("type", "").lower())
+        if not feed_type:
+            continue
+        href = link.get("href", "").strip()
+        if not href:
+            continue
+        resolved = urljoin(base_url, href)
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        result.append({"type": feed_type, "url": resolved})
+    return result
 
 
 def _extract_json_document(source_url: str, final_url: str, raw: str) -> ExtractedContent:
