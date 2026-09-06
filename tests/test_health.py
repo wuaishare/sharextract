@@ -9,10 +9,10 @@ class AdapterHealthTests(unittest.TestCase):
     def test_offline_health_validates_registry_router_and_fixture_corpus(self):
         report = get_adapter_health()
         self.assertEqual(report["status"], "ok")
-        self.assertEqual(report["summary"]["total"], 17)
+        self.assertEqual(report["summary"]["total"], 18)
         self.assertEqual(report["summary"]["unhealthy"], 0)
         self.assertEqual(report["summary"]["degraded"], 0)
-        self.assertEqual(report["fixture_corpus"]["count"], 17)
+        self.assertEqual(report["fixture_corpus"]["count"], 18)
         self.assertEqual(report["fixture_corpus"]["issues"], [])
 
         by_name = {item["name"]: item for item in report["adapters"]}
@@ -56,6 +56,31 @@ class AdapterHealthTests(unittest.TestCase):
         mocked.assert_called_once()
         self.assertEqual(report["status"], "ok")
         self.assertEqual(report["adapters"][0]["live"]["status"], "pass")
+
+    def test_live_check_retries_one_transient_exception(self):
+        fake = type(
+            "FakeResult",
+            (),
+            {
+                "platform": "x",
+                "extraction_method": "documented_oembed",
+                "title": "Example",
+                "has_body": True,
+            },
+        )()
+        with patch(
+            "sharextract.health.extract",
+            side_effect=[RuntimeError("temporary"), fake],
+        ) as mocked:
+            report = get_adapter_health(
+                live=True,
+                adapter_names=["x-oembed"],
+            )
+        self.assertEqual(mocked.call_count, 2)
+        live = report["adapters"][0]["live"]
+        self.assertEqual(live["status"], "pass")
+        self.assertEqual(live["attempts"], 2)
+        self.assertEqual(live["transient_errors"], ["temporary"])
 
     def test_markdown_renderer_contains_matrix(self):
         report = get_adapter_health(adapter_names=["x-oembed"])

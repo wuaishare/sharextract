@@ -441,18 +441,28 @@ def _run_live_check(
     if not isinstance(url, str) or not url:
         return {"status": "fail", "error": "live sample URL is missing"}
 
-    try:
-        result = extract(
-            url,
-            strategy="auto",
-            timeout=timeout,
-            max_bytes=max_bytes,
-        )
-    except Exception as exc:
+    errors: list[str] = []
+    result = None
+    attempts = max(1, int(sample.get("attempts") or 2))
+    for attempt in range(1, attempts + 1):
+        try:
+            result = extract(
+                url,
+                strategy="auto",
+                timeout=timeout,
+                max_bytes=max_bytes,
+            )
+            break
+        except Exception as exc:
+            errors.append(str(exc))
+
+    if result is None:
         return {
             "status": "fail",
             "url": url,
-            "error": str(exc),
+            "attempts": attempts,
+            "errors": errors,
+            "error": errors[-1] if errors else "live extraction failed",
         }
 
     expected_platform = sample.get("platform")
@@ -466,6 +476,7 @@ def _run_live_check(
                 f"got {result.platform!r}"
             ),
             "actual_method": result.extraction_method,
+            "attempts": len(errors) + 1,
         }
     if (
         isinstance(expected_methods, list)
@@ -479,6 +490,7 @@ def _run_live_check(
                 f"got {result.extraction_method!r}"
             ),
             "actual_platform": result.platform,
+            "attempts": len(errors) + 1,
         }
 
     return {
@@ -488,4 +500,6 @@ def _run_live_check(
         "method": result.extraction_method,
         "title": result.title,
         "has_body": result.has_body,
+        "attempts": len(errors) + 1,
+        "transient_errors": errors,
     }

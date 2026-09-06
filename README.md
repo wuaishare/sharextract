@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.10 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.11 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.10 coverage
+## Current v0.11 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -51,6 +51,8 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Any public JSON URL | Safe HTTP + normalized JSON | Generic |
 | Articles / blogs / news | oEmbed, JSON-LD, OG, structured HTML | Generic |
 | RSS / Atom feeds | Open-standard XML normalization; feed-entry/media extraction | Built-in standard |
+| WebVTT / SRT / TTML | Timed-text cue normalization into transcript metadata/text | Built-in standard |
+| HTML caption/subtitle tracks | Discover public captions/subtitles/descriptions track URLs | Generic metadata |
 | Web pages with declared feeds | Discover `<link rel=alternate>` RSS/Atom endpoints | Generic metadata |
 | Better article readability | Optional Trafilatura | Optional |
 | X / Twitter public post | Documented public oEmbed | Native adapter |
@@ -62,6 +64,14 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | Xiaohongshu / Douyin / Weibo / Zhihu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
+
+### Timed text, captions, and transcripts
+
+ShareXtract directly normalizes public WebVTT, SubRip/SRT, and TTML documents into a transcript contract with cues, normalized timestamps, optional speaker labels, language, cue count, duration, and readable text/Markdown.
+
+Ordinary HTML pages also expose public caption/subtitle/description track declarations through metadata.subtitle_tracks. Track discovery does not fetch those files automatically; the discovered public URL can be passed back to ShareXtract when the transcript itself is needed.
+
+WebVTT NOTE/STYLE/REGION blocks are excluded from transcript text. TTML containing DTD/ENTITY declarations is rejected before parsing. For language-less VTT/SRT files, a clear filename language suffix such as name.en.vtt can be used as a language hint.
 
 ### RSS / Atom feeds and discovery
 

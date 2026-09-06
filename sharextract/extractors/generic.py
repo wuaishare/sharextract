@@ -9,6 +9,7 @@ from urllib.parse import urljoin, urlsplit
 
 from sharextract.feeds import try_extract_syndication_feed
 from sharextract.models import ExtractedContent
+from sharextract.subtitles import try_extract_timed_text
 
 from .base import Extractor, ExtractorError
 
@@ -27,6 +28,7 @@ class _PageParser(HTMLParser):
         self.title_parts: list[str] = []
         self.meta: dict[str, str] = {}
         self.links: list[dict[str, str]] = []
+        self.tracks: list[dict[str, Any]] = []
         self.jsonld: list[Any] = []
         self.article_chunks: list[str] = []
         self.body_chunks: list[str] = []
@@ -64,6 +66,22 @@ class _PageParser(HTMLParser):
             typ = attr.get("type", "").strip().lower()
             if href:
                 self.links.append({"rel": rel, "href": href, "type": typ})
+        if tag == "track":
+            src = attr.get("src", "").strip()
+            kind = attr.get("kind", "subtitles").strip().lower()
+            if src and kind in {"captions", "subtitles", "descriptions"}:
+                self.tracks.append(
+                    {
+                        "kind": kind,
+                        "src": src,
+                        "srclang": attr.get("srclang", "").strip(),
+                        "label": attr.get("label", "").strip(),
+                        "default": any(
+                            str(key).lower() == "default"
+                            for key, _ in attrs
+                        ),
+                    }
+                )
         if tag == "script" and attr.get("type", "").lower().split(";", 1)[0].strip() == "application/ld+json":
             self._jsonld_depth = 1
             self._jsonld_parts = []
@@ -156,6 +174,15 @@ class GenericWebExtractor(Extractor):
         if "json" in ctype or response.text.lstrip().startswith(("{", "[")):
             return _extract_json_document(url, response.url, response.text)
 
+        timed_text_result = try_extract_timed_text(
+            url,
+            response.url,
+            response.content_type,
+            response.text,
+        )
+        if timed_text_result is not None:
+            return timed_text_result
+
         feed_result = try_extract_syndication_feed(
             url,
             response.url,
@@ -244,6 +271,10 @@ class GenericWebExtractor(Extractor):
                     parser,
                     response.url,
                 ),
+                "subtitle_tracks": _collect_subtitle_tracks(
+                    parser,
+                    response.url,
+                ),
             },
             warnings=warnings,
         )
@@ -265,6 +296,34 @@ class GenericWebExtractor(Extractor):
             if isinstance(payload, dict):
                 return payload
         return {}
+
+
+def _collect_subtitle_tracks(
+    parser: _PageParser,
+    base_url: str,
+) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for track in parser.tracks:
+        src = track.get("src")
+        kind = track.get("kind")
+        if not isinstance(src, str) or not src:
+            continue
+        resolved = urljoin(base_url, src)
+        key = (str(kind or ""), resolved)
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(
+            {
+                "kind": str(kind or "subtitles"),
+                "url": resolved,
+                "language": str(track.get("srclang") or ""),
+                "label": str(track.get("label") or ""),
+                "default": bool(track.get("default")),
+            }
+        )
+    return result
 
 
 def _collect_syndication_feeds(

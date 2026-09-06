@@ -4,6 +4,10 @@ ShareXtract is an orchestration and normalization layer. It should reuse strong 
 
 ## AI conversation exporters
 
+### Timed text standards
+
+WebVTT, SubRip/SRT, and TTML are handled as public timed-text documents before generic HTML extraction. The core path uses only Python standard-library parsing. HTML track elements are discovered as metadata rather than eagerly fetched, preserving ShareXtract's bounded/network-explicit behavior.
+
 ### RSS / Atom standards
 
 RSS 2.0, RSS 1.0/RDF, and Atom are normalized directly with Python standard-library XML parsing after the existing SafeHttpClient fetch. ShareXtract does not guess feed URLs by suffix and does not require a third-party parser for the core path. Standard enclosure/media references and webpage feed-discovery links are preserved. DTD/entity declarations are rejected before parsing.

@@ -294,6 +294,31 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "timed-text",
+        "platform": "timed-text",
+        "kind": "transcript",
+        "provenance": "open_standard",
+        "built_in": True,
+        "priority": 1000,
+        "stability": "standard",
+        "expected_methods": [
+            "standard_webvtt",
+            "standard_srt",
+            "standard_ttml",
+        ],
+        "fixture_ids": ["timed-text-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "integrated_in": "generic-web",
+        "live_sample": {
+            "url": "https://raw.githubusercontent.com/w3c/wai-website/1a09c1ef7aa3d6b1f792ab6f495494917340449e/wai-videos/evaluating/tools-for-evaluating.en.vtt",
+            "platform": "timed-text",
+            "methods": ["standard_webvtt"],
+        },
+    },
+    {
         "name": "rss-atom",
         "platform": "syndication",
         "kind": "feed",

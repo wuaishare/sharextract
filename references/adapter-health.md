@@ -50,6 +50,8 @@ Or target one or more adapters:
 
 Live checks use only fixed public sample URLs declared in the registry. They run through the normal sharextract.extract() router and verify both the normalized platform and extraction method. A simple HTTP 200 is not considered sufficient.
 
+A transport/extraction exception gets one confirmation retry by default before live health is marked degraded. Platform or extraction-method drift is treated as a semantic failure immediately rather than being hidden by retries. The report records the number of attempts and any transient errors.
+
 Live verification is intentionally not a required CI gate. Public sites, DNS, regional routing, provider maintenance, and rate limits can all create transient failures unrelated to a code change. CI therefore runs deterministic offline health; live checks are suitable for scheduled monitoring and release validation.
 
 ## Status meanings

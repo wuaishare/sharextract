@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.10 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.11 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.10 能力
+## 当前 v0.11 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -132,6 +132,8 @@ ShareXtract 默认按下面的优先级寻找数据：
 | 任意公开 JSON URL | Safe HTTP + JSON 归一化 | Generic |
 | 新闻 / 博客 / 普通文章 | oEmbed / JSON-LD / OG / HTML | Generic |
 | RSS / Atom Feed | 按 XML 标准归一化 Feed、Entry、Enclosure | Built-in Standard |
+| WebVTT / SRT / TTML | 标准字幕 Cue 归一化为统一 Transcript | Built-in Standard |
+| HTML 字幕轨道 | 自动发现 captions / subtitles / descriptions Track URL | Generic metadata |
 | 声明 Feed 的普通网页 | 自动发现标准 RSS/Atom `<link rel=alternate>` | Generic metadata |
 | 更强文章正文提取 | Trafilatura | Optional |
 | X / Twitter 公共帖子 | 有文档的公开 oEmbed | Native |
@@ -279,6 +281,14 @@ ShareXtract 不会引入：
 使用全新匿名浏览器上下文，只读取这个公开页面自己请求的首方 `GrokShare` GraphQL JSON。
 
 浏览器只是公共页面的传输层，不是账号模拟器。
+
+### Timed Text、字幕与 Transcript
+
+ShareXtract 现在直接原生归一化公开 WebVTT、SubRip/SRT 与 TTML 文档，统一输出 Cue、标准化起止时间、可选 Speaker、语言、Cue 数量、总时长以及可读纯文本/Markdown Transcript。
+
+普通 HTML 页面中的 captions、subtitles、descriptions track 也会通过 metadata.subtitle_tracks 被自动发现。发现过程不会自动继续请求字幕文件；需要正文时，再把公开 Track URL 交回 ShareXtract 即可。
+
+WebVTT 的 NOTE / STYLE / REGION 不会混进 Transcript；TTML 如果含有 DTD / ENTITY 会在解析前直接拒绝。对于文档本身未声明语言、但文件名采用 name.en.vtt 这类明确语言后缀的情况，可以把该后缀作为语言提示。
 
 ### RSS / Atom 与 Feed Discovery
 

@@ -103,6 +103,12 @@
       "adapter": "rss-atom",
       "path": "rss-atom-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "timed-text-contract",
+      "adapter": "timed-text",
+      "path": "timed-text-contract.json",
+      "scope": "route_contract"
     }
   ]
 }
