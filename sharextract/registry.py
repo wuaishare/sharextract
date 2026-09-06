@@ -223,6 +223,26 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "tiktok-oembed",
+        "platform": "tiktok",
+        "kind": "video",
+        "provenance": "documented_public_oembed",
+        "built_in": True,
+        "priority": 34,
+        "stability": "documented",
+        "expected_methods": ["documented_oembed"],
+        "fixture_ids": ["tiktok-oembed-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.tiktok.com/@scout2015/video/6718335390845095173",
+            "platform": "tiktok",
+            "methods": ["documented_oembed"],
+        },
+    },
+    {
         "name": "bilibili-video",
         "platform": "bilibili",
         "kind": "video",

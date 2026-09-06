@@ -131,3 +131,7 @@ Zhihu answers and Zhuanlan articles expose different anonymous public structures
 ### Weibo mobile public PWA JSON
 
 Public Weibo status URLs are normalized through the anonymous m.weibo.cn mobile PWA JSON surface. The core status route is statuses/show?id={bid}; statuses marked isLongText may additionally use the public statuses/extend?id={bid} response. The adapter sends only anonymous PWA request headers and does not use account cookies, OAuth tokens, browser session state, or authenticated APIs.
+
+### TikTok documented oEmbed
+
+Direct public TikTok video URLs are normalized through TikTok's documented /oembed endpoint. This route is separate from TikTok Display API authorization and needs no user login or access token for public embed metadata. ShareXtract preserves the returned standard oEmbed metadata and does not use authenticated account data.

@@ -9,7 +9,7 @@ from .grok import GrokShareExtractor
 from .kimi import KimiShareExtractor
 from .gemini import GeminiShareExtractor
 from .mastodon import MastodonStatusExtractor
-from .oembed import VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
+from .oembed import TikTokOEmbedExtractor, VimeoOEmbedExtractor, XPostOEmbedExtractor, YouTubeOEmbedExtractor
 from .qwen import QwenShareExtractor
 from .ytdlp import YtDlpExtractor
 from .weibo import WeiboStatusExtractor
@@ -29,6 +29,7 @@ __all__ = [
     "MastodonStatusExtractor",
     "XPostOEmbedExtractor",
     "YouTubeOEmbedExtractor",
+    "TikTokOEmbedExtractor",
     "VimeoOEmbedExtractor",
     "QwenShareExtractor",
     "YtDlpExtractor",

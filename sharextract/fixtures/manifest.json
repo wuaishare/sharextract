@@ -127,6 +127,12 @@
       "adapter": "weibo-status",
       "path": "weibo-status-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "tiktok-oembed-contract",
+      "adapter": "tiktok-oembed",
+      "path": "tiktok-oembed-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

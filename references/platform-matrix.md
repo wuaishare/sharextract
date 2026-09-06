@@ -19,7 +19,8 @@ This matrix describes the preferred path, not a promise that every link will alw
 | X / Twitter post | documented public oEmbed | generic public page | native |
 | Bilibili video | first-party public view metadata JSON | yt-dlp / generic public page | native, undocumented |
 | Xiaohongshu | public page only unless a permitted public endpoint exists | public browser adapter | roadmap |
-| Douyin / TikTok | public metadata / yt-dlp where supported | generic public page | optional |
+| TikTok video | documented public oEmbed | yt-dlp / generic public page | native |
+| Douyin | public metadata only if a permitted anonymous route exists | generic public page | roadmap |
 | Weibo status | anonymous first-party mobile PWA JSON; public extend for long text | generic public page | native, undocumented |
 | Zhihu answer | anonymous first-party Tardis SSR reader | generic public page | native, undocumented |
 | Zhihu Zhuanlan article | embedded first-party initial state | anonymous Tardis SSR / generic public page | native, undocumented |

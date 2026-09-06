@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.13 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.14 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.13 能力
+## 当前 v0.14 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -139,11 +139,12 @@ ShareXtract 默认按下面的优先级寻找数据：
 | X / Twitter 公共帖子 | 有文档的公开 oEmbed | Native |
 | YouTube 公共视频 | 有文档的公开 oEmbed | Native |
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
+| TikTok 公共视频 | 有文档的公开 oEmbed | Native |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
 | 知乎公开回答 | 匿名首方 Tardis SSR Reader；不使用签名 API / Cookie | Native |
 | 知乎专栏文章 | 公共页面内嵌 initial state；匿名 Tardis SSR fallback | Native |
 | 微博公开帖子 | 匿名首方移动 PWA JSON；仅长文按需读取公开 extend | Native |
-| TikTok / Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
+| Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
 | 小红书 / 抖音 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
@@ -210,6 +211,14 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 ### X / YouTube / Vimeo：优先 oEmbed
 
 这三个平台都有无需登录的公开 oEmbed 路径。ShareXtract 会在 yt-dlp 与通用网页解析之前直接调用 oEmbed，获取作者、标题、Embed metadata、缩略图等结构化信息；X 还会从官方 oEmbed HTML 中归一化可见帖子正文。
+
+### TikTok 官方 oEmbed
+
+TikTok 的公开直接视频 URL 现在优先走 TikTok 官方开发文档明确提供的 oEmbed API，而不是 yt-dlp 或页面逆向。
+
+官方 oEmbed 直接返回标题、作者、作者唯一标识、Embed HTML、缩略图等标准化元数据，因此 ShareXtract 将 www.tiktok.com/@user/video/{id} 作为有文档的 Native 路由。整个流程不需要 TikTok 登录、用户授权、Developer Access Token 或浏览器账号态。
+
+TikTok Display API 是另一套需要开发者配置和授权的产品；ShareXtract 提取公开单视频 metadata 并不需要它。
 
 ### Bilibili：首方 metadata JSON
 

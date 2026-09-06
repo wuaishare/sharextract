@@ -1,6 +1,7 @@
 import unittest
 
 from sharextract.extractors.oembed import (
+    TikTokOEmbedExtractor,
     VimeoOEmbedExtractor,
     XPostOEmbedExtractor,
     YouTubeOEmbedExtractor,
@@ -67,6 +68,36 @@ class OEmbedExtractorTests(unittest.TestCase):
         self.assertEqual(result.media[0]["type"], "video")
         self.assertEqual(result.media[0]["thumbnail_url"], "https://img.example/thumb.jpg")
 
+    def test_tiktok_oembed_normalizes_video(self):
+        client = FakeClient(
+            {
+                "version": "1.0",
+                "type": "video",
+                "title": "Public TikTok caption #example",
+                "author_name": "Creator",
+                "author_unique_id": "creator",
+                "author_url": "https://www.tiktok.com/@creator",
+                "thumbnail_url": "https://img.example/tiktok.jpg",
+                "thumbnail_width": 576,
+                "thumbnail_height": 1024,
+                "provider_name": "TikTok",
+                "html": "<blockquote></blockquote>",
+            }
+        )
+        url = "https://www.tiktok.com/@creator/video/6718335390845095173"
+        result = TikTokOEmbedExtractor(client).extract(url)
+        self.assertEqual(result.platform, "tiktok")
+        self.assertEqual(result.kind, "video")
+        self.assertEqual(result.extraction_method, "documented_oembed")
+        self.assertEqual(result.title, "Public TikTok caption #example")
+        self.assertEqual(result.text, "Public TikTok caption #example")
+        self.assertEqual(result.author, "Creator")
+        self.assertEqual(
+            result.metadata["oembed"]["author_unique_id"],
+            "creator",
+        )
+        self.assertIn("www.tiktok.com%2F%40creator%2Fvideo", client.urls[0])
+
     def test_vimeo_oembed_uses_description_and_duration(self):
         client = FakeClient(
             {
@@ -89,12 +120,20 @@ class OEmbedExtractorTests(unittest.TestCase):
     def test_url_matchers_are_narrow(self):
         x = XPostOEmbedExtractor(FakeClient({}))
         yt = YouTubeOEmbedExtractor(FakeClient({}))
+        tk = TikTokOEmbedExtractor(FakeClient({}))
         vm = VimeoOEmbedExtractor(FakeClient({}))
         self.assertTrue(x.supports("https://x.com/a/status/123"))
         self.assertFalse(x.supports("https://x.com/a"))
         self.assertTrue(yt.supports("https://youtu.be/dQw4w9WgXcQ"))
         self.assertTrue(yt.supports("https://www.youtube.com/shorts/abc"))
         self.assertFalse(yt.supports("https://www.youtube.com/@creator"))
+        self.assertTrue(
+            tk.supports(
+                "https://www.tiktok.com/@scout2015/video/6718335390845095173"
+            )
+        )
+        self.assertFalse(tk.supports("https://www.tiktok.com/@scout2015"))
+        self.assertFalse(tk.supports("https://vt.tiktok.com/abc"))
         self.assertTrue(vm.supports("https://vimeo.com/863362136"))
         self.assertFalse(vm.supports("https://vimeo.com/staff"))
 

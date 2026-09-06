@@ -66,6 +66,10 @@ ShareXtract is for content that is already public to the requester. It is not an
 
 For unstable first-party endpoints, label them as undocumented and keep a public-page fallback. Prefer adapters that can be tested with static fixtures and that fail closed when content cannot be verified.
 
+## TikTok public videos
+
+For direct public TikTok video URLs, use the native documented oEmbed route through the normal extract() router. No TikTok user authorization or access token is required for this oEmbed path. Do not substitute authenticated Display API access for ordinary public embed metadata.
+
 ## Weibo public statuses
 
 For public Weibo status URLs, use the native adapter through the normal extract() router. It uses Weibo's anonymous mobile PWA JSON route and requests the public extend route only for statuses marked isLongText. Do not add login cookies or authenticated session state when the public PWA route is unavailable.

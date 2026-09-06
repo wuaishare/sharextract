@@ -181,6 +181,35 @@ class YouTubeOEmbedExtractor(_OEmbedExtractor):
         )
 
 
+class TikTokOEmbedExtractor(_OEmbedExtractor):
+    name = "tiktok-oembed"
+    platform = "tiktok"
+    kind = "video"
+    priority = 34
+
+    def supports(self, url: str) -> bool:
+        parsed = urllib.parse.urlsplit(url)
+        host = (parsed.hostname or "").lower()
+        if host not in {
+            "tiktok.com",
+            "www.tiktok.com",
+            "m.tiktok.com",
+        }:
+            return False
+        parts = [part for part in parsed.path.split("/") if part]
+        return (
+            len(parts) >= 3
+            and parts[0].startswith("@")
+            and parts[1] == "video"
+            and parts[2].isdigit()
+        )
+
+    def endpoint_for(self, url: str) -> str:
+        return "https://www.tiktok.com/oembed?" + urllib.parse.urlencode(
+            {"url": url}
+        )
+
+
 class VimeoOEmbedExtractor(_OEmbedExtractor):
     name = "vimeo-oembed"
     platform = "vimeo"
