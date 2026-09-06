@@ -135,3 +135,7 @@ Public Weibo status URLs are normalized through the anonymous m.weibo.cn mobile 
 ### TikTok documented oEmbed
 
 Direct public TikTok video URLs are normalized through TikTok's documented /oembed endpoint. This route is separate from TikTok Display API authorization and needs no user login or access token for public embed metadata. ShareXtract preserves the returned standard oEmbed metadata and does not use authenticated account data.
+
+### Douyin Jingxuan public metadata reader
+
+Douyin's ordinary web-detail JSON surface currently may return an empty body even for public videos. ShareXtract instead uses the anonymous first-party Jingxuan mobile video reader, which embeds SSR state and schema.org VideoObject metadata for public IDs. The adapter consumes only metadata fields and deliberately excludes temporary playback/download URLs contained in nested video_model data. A standard anonymous mobile-browser User-Agent is used for content negotiation; no cookies, private signatures or account state are imported.

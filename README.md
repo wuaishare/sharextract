@@ -8,7 +8,7 @@ ShareXtract accepts a public URL, chooses the highest-fidelity extraction route 
 
 It is both a small Python library/CLI and an installable Agent Skill using SKILL.md and agents/openai.yaml.
 
-> Status: **v0.14 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
+> Status: **v0.15 alpha**. The architecture and contract are usable today; platform coverage will grow through adapters and community PRs.
 
 Adapter reliability is machine-readable: [Adapter health and fixture corpus](references/adapter-health.md) documents the registry, deterministic offline health gate, packaged contract fixtures, and optional live verification.
 
@@ -35,7 +35,7 @@ ShareXtract prefers methods in this order:
 
 It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, or platform access controls.
 
-## Current v0.14 coverage
+## Current v0.15 coverage
 
 | Surface | Current method | Status |
 | --- | --- | --- |
@@ -59,13 +59,14 @@ It does **not** bypass login, CAPTCHA, paywalls, WAF challenges, private links, 
 | YouTube public video | Documented public oEmbed | Native adapter |
 | Vimeo public video | Documented public oEmbed | Native adapter |
 | TikTok public video | Documented public oEmbed | Native adapter |
+| Douyin public video | Anonymous first-party Jingxuan SSR metadata; schema.org fallback | Native metadata-only adapter |
 | Bilibili public video | First-party public metadata JSON | Native adapter |
 | Zhihu public answer | Anonymous first-party Tardis SSR reader; no signed API/cookies | Native adapter |
 | Zhihu Zhuanlan article | Embedded first-party initial state; anonymous Tardis SSR fallback | Native adapter |
 | Weibo public status | Anonymous first-party mobile PWA JSON; public long-text extend only when needed | Native adapter |
 | Instagram / Twitch / SoundCloud / Facebook and other supported media URLs | Optional yt-dlp, metadata-only | Optional |
 | Doubao public share | First-party router JSON embedded in public thread/share HTML | Native adapter |
-| Xiaohongshu / Douyin / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
+| Xiaohongshu / Kuaishou | Adapter/integration roadmap; public-only policy | Planned |
 
 “Supported” never means permanently guaranteed: websites and undocumented endpoints change. The router records the method actually used and falls back when possible.
 
@@ -170,6 +171,16 @@ ChatGPT currently embeds public `/share/{id}` conversations and newer `/s/{id}` 
 ### Documented oEmbed adapters
 
 X public posts, YouTube videos, and Vimeo videos have explicit first-party oEmbed routes. ShareXtract calls those documented endpoints before yt-dlp or generic HTML, preserving author/title/embed metadata and visible X post text without requiring developer tokens.
+
+### Douyin public video metadata
+
+Douyin's ordinary desktop video page currently returns an application shell to anonymous non-browser clients, and the historical/public-looking aweme detail/iteminfo JSON routes can return HTTP 200 with an empty body. ShareXtract therefore does not depend on those unstable routes and does not implement private a_bogus/device-signing logic.
+
+Instead, direct public Douyin video IDs are read through the anonymous first-party Jingxuan reader at jingxuan.douyin.com/m/video/{id}. Under an ordinary anonymous mobile-browser representation this page currently embeds both window._SSR_DATA and schema.org VideoObject metadata. ShareXtract prefers the richer SSR result and falls back to VideoObject when the SSR shape changes.
+
+The normalized result includes title/abstract, author, publish time, duration, cover image, play count, digg count, orientation and basic author statistics. v.douyin.com short links are only resolved to discover the public video ID; metadata is still read from the same Jingxuan reader.
+
+The embedded SSR may also contain temporary playback/CDN URLs inside video_model. ShareXtract intentionally parses only safe metadata such as duration and never exports those playback/download stream URLs. The adapter is therefore metadata-only and requires no login cookies, private signatures, CAPTCHA/WAF bypass, or authenticated browser state.
 
 ### TikTok documented oEmbed
 

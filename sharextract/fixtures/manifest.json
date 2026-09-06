@@ -133,6 +133,12 @@
       "adapter": "tiktok-oembed",
       "path": "tiktok-oembed-contract.json",
       "scope": "route_contract"
+    },
+    {
+      "id": "douyin-video-contract",
+      "adapter": "douyin-video",
+      "path": "douyin-video-contract.json",
+      "scope": "route_contract"
     }
   ]
 }

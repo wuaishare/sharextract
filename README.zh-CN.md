@@ -22,7 +22,7 @@ ShareXtract 是一个面向 **AI 对话分享、社交内容、媒体与开放�
 统一 ExtractedContent
 ```
 
-> 当前状态：**v0.14 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
+> 当前状态：**v0.15 alpha**。核心架构、统一结果契约、CLI / Python / MCP / HTTP 服务已经可用，平台覆盖会持续通过 Adapter 与社区 PR 扩展。
 
 ## 项目资源
 
@@ -116,7 +116,7 @@ ShareXtract 默认按下面的优先级寻找数据：
 - 能用成熟项目，就不复制别人已经解决的问题；
 - 遇到 Cloudflare / WAF，不把“绕过反爬”当成默认工程目标。
 
-## 当前 v0.14 能力
+## 当前 v0.15 能力
 
 | 平台 / 内容 | 当前提取方式 | 状态 |
 |---|---|---|
@@ -140,13 +140,14 @@ ShareXtract 默认按下面的优先级寻找数据：
 | YouTube 公共视频 | 有文档的公开 oEmbed | Native |
 | Vimeo 公共视频 | 有文档的公开 oEmbed | Native |
 | TikTok 公共视频 | 有文档的公开 oEmbed | Native |
+| 抖音公开视频 | 匿名首方 Jingxuan SSR metadata；schema.org fallback | Native metadata-only |
 | Bilibili 公共视频 | 首方公开视频 metadata JSON | Native |
 | 知乎公开回答 | 匿名首方 Tardis SSR Reader；不使用签名 API / Cookie | Native |
 | 知乎专栏文章 | 公共页面内嵌 initial state；匿名 Tardis SSR fallback | Native |
 | 微博公开帖子 | 匿名首方移动 PWA JSON；仅长文按需读取公开 extend | Native |
 | Instagram / Twitch / SoundCloud / Facebook 等媒体 | yt-dlp metadata-only | Optional |
 | 豆包公共分享 | 公共 thread/share HTML 内嵌首方 Router JSON | Native |
-| 小红书 / 抖音 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
+| 小红书 / 快手 | 公共内容 Adapter / 集成路线 | Planned |
 
 “支持”不代表某个平台的未文档接口永远不会变化。
 
@@ -211,6 +212,20 @@ ShareXtract 可以直接调用该公开 RPC，因此不需要：
 ### X / YouTube / Vimeo：优先 oEmbed
 
 这三个平台都有无需登录的公开 oEmbed 路径。ShareXtract 会在 yt-dlp 与通用网页解析之前直接调用 oEmbed，获取作者、标题、Embed metadata、缩略图等结构化信息；X 还会从官方 oEmbed HTML 中归一化可见帖子正文。
+
+### 抖音公开视频 Metadata
+
+抖音当前普通桌面 video 页面面对匿名非浏览器客户端通常只返回应用壳；历史上常见的 aweme detail / iteminfo JSON 路线现在也可能出现 HTTP 200 但响应体为空。因此 ShareXtract 不把这些退化中的接口作为主路径，也不会实现私有 a_bogus / 设备签名逻辑。
+
+对于公开抖音视频 ID，ShareXtract 会转向抖音自己匿名公开的：
+
+    https://jingxuan.douyin.com/m/video/{id}
+
+在普通匿名移动浏览器表示下，该页面当前会直接内嵌 window._SSR_DATA 与标准 schema.org VideoObject。Adapter 优先读取信息更完整的 SSR；若 SSR 结构变化，则安全退回 VideoObject。
+
+当前统一输出标题/摘要、作者、发布时间、时长、封面、播放量、点赞量、横竖屏信息和作者基础统计。v.douyin.com 短链只负责通过公开重定向解析视频 ID，真正的 metadata 仍统一从 Jingxuan Reader 获取。
+
+页面内嵌的 video_model 还可能包含有时效性的 CDN 播放地址。ShareXtract **明确不会导出这些 playback / download stream URL**，只读取 duration 等安全 metadata，因此这是 metadata-only Adapter。整个流程不需要登录 Cookie、私有签名、验证码/WAF 绕过或浏览器账号态。
 
 ### TikTok 官方 oEmbed
 

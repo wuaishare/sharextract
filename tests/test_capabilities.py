@@ -19,6 +19,7 @@ class CapabilitiesTests(unittest.TestCase):
         self.assertIn("zhihu-article", names)
         self.assertIn("weibo-status", names)
         self.assertIn("tiktok-oembed", names)
+        self.assertIn("douyin-video", names)
         self.assertIn("generic-web", names)
         self.assertFalse(data["security_boundary"]["bypasses_authentication"])
 

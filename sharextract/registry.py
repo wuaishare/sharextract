@@ -335,6 +335,32 @@ ADAPTER_REGISTRY: tuple[dict[str, Any], ...] = (
         },
     },
     {
+        "name": "douyin-video",
+        "platform": "douyin",
+        "kind": "video",
+        "provenance": "first_party_public_jingxuan_ssr",
+        "built_in": True,
+        "priority": 38,
+        "stability": "first_party_undocumented",
+        "expected_methods": [
+            "first_party_public_jingxuan_ssr_json",
+            "first_party_public_jingxuan_jsonld",
+        ],
+        "fixture_ids": ["douyin-video-contract"],
+        "verification": {
+            "last_verified_at": "2026-09-06",
+            "mode": "unit+live",
+        },
+        "live_sample": {
+            "url": "https://www.douyin.com/video/7660369906369629476",
+            "platform": "douyin",
+            "methods": [
+                "first_party_public_jingxuan_ssr_json",
+                "first_party_public_jingxuan_jsonld",
+            ],
+        },
+    },
+    {
         "name": "mastodon-public-api",
         "platform": "mastodon",
         "kind": "social_post",

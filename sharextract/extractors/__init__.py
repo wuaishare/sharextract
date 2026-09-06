@@ -4,6 +4,7 @@ from .chatgpt import ChatGPTShareExtractor
 from .claude import ClaudeShareExtractor
 from .deepseek import DeepSeekShareExtractor
 from .doubao import DoubaoShareExtractor
+from .douyin import DouyinVideoExtractor
 from .generic import GenericWebExtractor
 from .grok import GrokShareExtractor
 from .kimi import KimiShareExtractor
@@ -22,6 +23,7 @@ __all__ = [
     "ClaudeShareExtractor",
     "DeepSeekShareExtractor",
     "DoubaoShareExtractor",
+    "DouyinVideoExtractor",
     "GenericWebExtractor",
     "GrokShareExtractor",
     "KimiShareExtractor",

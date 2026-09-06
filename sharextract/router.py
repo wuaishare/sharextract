@@ -12,6 +12,7 @@ from .extractors import (
     ClaudeShareExtractor,
     DeepSeekShareExtractor,
     DoubaoShareExtractor,
+    DouyinVideoExtractor,
     GenericWebExtractor,
     GrokShareExtractor,
     KimiShareExtractor,
@@ -98,6 +99,7 @@ def _extractors_for_strategy(strategy: str, client: SafeHttpClient) -> list[Extr
             ZhihuAnswerExtractor(client),
             ZhihuArticleExtractor(client),
             WeiboStatusExtractor(client),
+            DouyinVideoExtractor(client),
         ],
         key=lambda extractor: extractor.priority,
     )
