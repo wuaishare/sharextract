@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sharextract"
+version = "0.1.0"
+description = "Protocol-first public share content extractor for AI chats, social posts, media, and web pages."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "wuaishare" }]
+keywords = ["agent-skills", "content-extraction", "share-links", "web", "ai", "oembed"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = []
+
+[project.optional-dependencies]
+web = ["trafilatura>=2.0"]
+media = ["yt-dlp"]
+all = ["trafilatura>=2.0", "yt-dlp"]
+
+[project.scripts]
+sharextract = "sharextract.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/wuaishare/sharextract"
+Repository = "https://github.com/wuaishare/sharextract"
+Issues = "https://github.com/wuaishare/sharextract/issues"
+
+[tool.setuptools.packages.find]
+include = ["sharextract*"]
