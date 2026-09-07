@@ -19,8 +19,8 @@ This document is the repository-level source of truth for Agent Skill distributi
 | SkillsMP | GitHub-indexed | Eligible for automated discovery through Agent Skill metadata and GitHub topics |
 | AgentSkill.sh | Registry import/sync | Imported from the canonical `SKILL.md`; security score 100/100. GitHub owner-level re-import/claim remains blocked by the registry's GitHub API rate limit |
 | skills.re | GitHub import | Submitted from the canonical repository; processing/listing is asynchronous |
-| Skillstore | GitHub URL + audit PR | Submission `c3bdf489-27cd-4c45-b40c-d1c94d494de9` produced PR #3323 with a high-risk review. Upstream has since hardened DNS-rebinding/SSRF, browser navigation, proxy trust, and indirect prompt-injection boundaries; CI is green. Fresh resubmission is temporarily blocked by Skillstore's one-hour duplicate cooldown |
-| Smithery Skills | Git-backed/API listing | Smithery OAuth is complete and namespace access is available; final create/update API publish is pending |
+| Skillstore | GitHub URL + audit PR | Submission `c3bdf489-27cd-4c45-b40c-d1c94d494de9` produced PR #3323 with a high-risk review. Upstream has since hardened DNS-rebinding/SSRF, browser navigation, proxy trust, and indirect prompt-injection boundaries; CI is green. PR #3323 has been merged into Skillstore's review pipeline; the original audit remains high-risk until a fresh post-hardening rescan can run after the duplicate cooldown |
+| Smithery Skills | Git-backed/API listing | **Published/listed:** Smithery skill `exuankj/sharextract`, backed by the canonical GitHub repository |
 | ClawHub | Registry publish | **Published:** https://clawhub.ai/wuaishare/sharextract — initial web import is MIT-0. A corrected `0.23.0` thin bundle is prepared; `.clawhubignore` limits future releases to `SKILL.md` + four referenced files while the Python runtime remains Apache-2.0 on GitHub |
 | AI智库 | First-party catalog | **Published:** https://ai.wuaishare.cn/hub/sharextract/ — richer GitHub/i18n/security enrichment is tracked as a catalog pipeline improvement |
 
