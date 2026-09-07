@@ -12,6 +12,14 @@ metadata:
 
 Extract public shared content with the highest-fidelity, lowest-cost method available and preserve how the content was obtained.
 
+## Runtime setup
+
+This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the matching runtime release from the canonical GitHub repository before executing extraction commands:
+
+    python -m pip install "git+https://github.com/wuaishare/sharextract.git@v0.23.0"
+
+The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
+
 ## Workflow
 
 1. Treat the supplied URL as public input only. Never reuse browser cookies, session tokens, credentials, or private connector data unless the user explicitly requests an authenticated workflow and the platform permits it.
