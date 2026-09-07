@@ -14,9 +14,9 @@ Extract public shared content with the highest-fidelity, lowest-cost method avai
 
 ## Runtime setup
 
-This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the matching runtime release from the canonical GitHub repository before executing extraction commands:
+This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the matching runtime release from the canonical GitHub repository before executing extraction commands. The command below pins the exact immutable commit behind v0.23.1:
 
-    python -m pip install "git+https://github.com/wuaishare/sharextract.git@v0.23.1"
+    python -m pip install "git+https://github.com/wuaishare/sharextract.git@1d8610f883033ac8aa8d8ac711d77bd62a70f307"
 
 The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
 
