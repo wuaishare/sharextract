@@ -8,6 +8,7 @@ This document is the repository-level source of truth for Agent Skill distributi
 - Skill path: `/SKILL.md`
 - Runtime package: `sharextract`
 - Canonical repository license: Apache-2.0
+- Current release: `v0.23.1`
 - Version source of truth: `pyproject.toml` + GitHub Releases
 - Agent Skills metadata: `SKILL.md` uses the portable `license`, `compatibility`, and `metadata.author/version` fields
 
@@ -17,11 +18,11 @@ This document is the repository-level source of truth for Agent Skill distributi
 | --- | --- | --- |
 | skills.sh | GitHub-native | Install with `npx skills add wuaishare/sharextract`; repository is canonical |
 | SkillsMP | GitHub-indexed | Eligible for automated discovery through Agent Skill metadata and GitHub topics |
-| AgentSkill.sh | Registry import/sync | Imported from the canonical `SKILL.md`; security score 100/100. GitHub owner-level re-import/claim remains blocked by the registry's GitHub API rate limit |
-| skills.re | GitHub import | Submitted from the canonical repository; processing/listing is asynchronous |
-| Skillstore | GitHub URL + audit PR | Submission `c3bdf489-27cd-4c45-b40c-d1c94d494de9` produced PR #3323 with a high-risk review. Upstream has since hardened DNS-rebinding/SSRF, browser navigation, proxy trust, and indirect prompt-injection boundaries; CI is green. PR #3323 has been merged into Skillstore's review pipeline; the original audit remains high-risk until a fresh post-hardening rescan can run after the duplicate cooldown |
-| Smithery Skills | Git-backed/API listing | **Published/listed:** Smithery skill `wuaishare/sharextract`, backed by the canonical GitHub repository |
-| ClawHub | Registry publish | **Published/latest:** https://clawhub.ai/wuaishare/sharextract — `0.23.0`, MIT-0, 5-file thin bundle (`SKILL.md` + four references). The accidental full-repository `0.1.0` version has been withdrawn; the Python runtime remains Apache-2.0 on GitHub |
+| AgentSkill.sh | Registry import/sync | Imported from the canonical `SKILL.md`; security score 100/100. GitHub owner-level re-import/claim remains blocked by the registry's server-side GitHub API rate limit (HTTP 429) |
+| skills.re | GitHub import | **Publicly indexed:** https://skills.re/skills/wuaishare/sharextract/sharextract under Wuaishare, with registry-generated Python / Information-Retrieval / API-Integration tags |
+| Skillstore | GitHub URL + independent audit | Original submission `c3bdf489-27cd-4c45-b40c-d1c94d494de9` produced PR #3323 and a high-risk report against an older commit. Those findings drove upstream SSRF/browser/prompt-injection hardening and v0.23.1. A public re-submit now collides with the existing `pending/wuaishare/sharextract` target, so re-audit has been requested in aiskillstore/marketplace issue #3324 |
+| Smithery Skills | Git-backed/API listing | **Published/listed:** https://smithery.ai/skills/wuaishare/sharextract, backed by the canonical GitHub repository |
+| ClawHub | Registry publish | **Published/latest:** https://clawhub.ai/wuaishare/sharextract — `0.23.1`, MIT-0, thin Skill bundle. ClawHub moderation is clean and the version-level LLM scanner is clean/benign after the runtime install was pinned to the immutable v0.23.1 release commit. The accidental `0.1.0` full-repository import and superseded `0.23.0` version have been withdrawn |
 | AI智库 | First-party catalog | **Published:** https://ai.wuaishare.cn/hub/sharextract/ — richer GitHub/i18n/security enrichment is tracked as a catalog pipeline improvement |
 
 ## Rules
