@@ -167,6 +167,18 @@ ShareXtract recognizes RSS 2.0, RSS 1.0/RDF, and Atom from the HTTP response and
 
 Normal HTML pages also expose declared syndication endpoints through `metadata.syndication_feeds` when they include standard `<link rel="alternate" type="application/rss+xml|application/atom+xml">` elements. No second request is made just to discover those links. XML containing DTD/entity declarations is rejected.
 
+## Install as an Agent Skill
+
+The GitHub repository is the canonical Skill source. Agent Skills-compatible installers can install the root `SKILL.md` directly:
+
+```bash
+npx skills add wuaishare/sharextract
+```
+
+This installs the **Agent Skill instruction layer**. ShareXtract also has a deterministic Python runtime; install the Python package below when the agent needs to execute the CLI/library/MCP/HTTP adapters locally.
+
+See [DISTRIBUTION.md](DISTRIBUTION.md) for marketplace/registry status, ownership verification requirements, and licensing boundaries.
+
 ## Install
 
 Core has no required third-party Python dependency:

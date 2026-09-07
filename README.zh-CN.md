@@ -456,6 +456,18 @@ ShareXtract 现在原生识别 RSS 2.0、RSS 1.0/RDF 与 Atom。识别依据是 
 
 出于安全边界，包含 DTD / ENTITY 声明的 XML Feed 会直接拒绝，避免实体展开类风险。
 
+## 作为 Agent Skill 安装
+
+GitHub 仓库是 ShareXtract Skill 的 canonical source。兼容 Agent Skills 的安装器可直接安装仓库根目录 `SKILL.md`：
+
+```bash
+npx skills add wuaishare/sharextract
+```
+
+这一步安装的是 **Agent Skill 指令层**。ShareXtract 同时包含确定性的 Python Runtime；当 Agent 需要在本地真正执行 CLI / Python / MCP / HTTP Adapter 时，还需要按下方方式安装 Python 包。
+
+各技能市场的同步状态、所有权验证要求与许可证边界统一记录在 [DISTRIBUTION.md](DISTRIBUTION.md)。
+
 ## 安装
 
 ### 核心版
