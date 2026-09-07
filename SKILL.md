@@ -1,6 +1,11 @@
 ---
 name: sharextract
 description: Extract normalized content from public share URLs, RSS/Atom feeds, timed-text/subtitle documents, and web pages using a protocol-first fallback ladder. Use for public AI chat shares, social/media links, RSS/Atom feeds, WebVTT/SRT/TTML captions, articles, oEmbed pages, public JSON endpoints, or when an agent needs the highest-fidelity public content without bypassing authentication, CAPTCHAs, paywalls, or access controls.
+license: Apache-2.0
+compatibility: Requires Python 3.10+ and network access for public-content retrieval; optional extras enable browser, media, MCP, and HTTP service routes.
+metadata:
+  author: wuaishare
+  version: "0.23.0"
 ---
 
 # ShareXtract
