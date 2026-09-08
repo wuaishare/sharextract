@@ -22,6 +22,8 @@ Undocumented provider-owned endpoints are allowed only when they are publicly re
 
 ## Development
 
+Repository branch/worktree lifecycle follows [docs/engineering/git-worktree-governance.md](docs/engineering/git-worktree-governance.md). Keep `main` as the only long-lived branch and remove short-lived branches/worktrees during Return-to-Trunk closeout.
+
     python -m unittest discover -s tests -v
     python -m compileall -q sharextract
     python -m sharextract --help
