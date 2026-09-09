@@ -82,6 +82,31 @@ jobs:
             echo "Agent Skill bundle must not install or download software autonomously." >&2
             exit 1
           fi
+          python - <<'PY'
+          import pathlib
+          import re
+
+          skill = pathlib.Path("SKILL.md").read_text(encoding="utf-8")
+          unsafe_dynamic_shell = re.findall(
+              r'(?mi)^\s*python\s+-m\s+sharextract\s+["\']?(?:https?://|<?[A-Z_]*URL)',
+              skill,
+          )
+          if unsafe_dynamic_shell:
+              raise SystemExit(
+                  "Dynamic URL examples must use a shell-free argv/process contract, not a shell command string: "
+                  + repr(unsafe_dynamic_shell)
+              )
+          required_fragments = [
+              "Pass the URL as one argv element through a shell-free process API.",
+              '["python", "-m", "sharextract", "<SUPPLIED_PUBLIC_URL>", "--format", "json"]',
+              "Accept only one absolute public `http://` or `https://` URL.",
+              "If the environment exposes only a shell-string execution interface, stop instead of executing an untrusted URL.",
+              "command substitution",
+          ]
+          missing = [fragment for fragment in required_fragments if fragment not in skill]
+          if missing:
+              raise SystemExit(f"Agent Skill invocation-safety contract drifted: {missing!r}")
+          PY
           grep -q '^Expected runtime release: `v[0-9][0-9.]*`$' SKILL.md
           grep -q '^Expected core wheel SHA-256: `[a-f0-9]\{64\}`$' SKILL.md
       - name: Install pinned build frontend

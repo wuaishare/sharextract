@@ -2,10 +2,10 @@
 name: sharextract
 description: Extract normalized content from public share URLs, RSS/Atom feeds, timed-text/subtitle documents, and web pages using a protocol-first fallback ladder. Use for public AI chat shares, social/media links, RSS/Atom feeds, WebVTT/SRT/TTML captions, articles, oEmbed pages, public JSON endpoints, or when an agent needs the highest-fidelity public content without bypassing authentication, CAPTCHAs, paywalls, or access controls.
 license: Apache-2.0
-compatibility: Requires ShareXtract runtime v0.23.3 to be preinstalled by the environment/operator, Python 3.10+, and network access for public-content retrieval; this Skill does not install software.
+compatibility: Requires ShareXtract runtime v0.23.4 to be preinstalled by the environment/operator, Python 3.10+, and network access for public-content retrieval; this Skill does not install software.
 metadata:
   author: wuaishare
-  version: "0.23.3"
+  version: "0.23.4"
 ---
 
 # ShareXtract
@@ -20,17 +20,31 @@ Before extraction, verify that the environment already provides the matching Sha
 
     python -c "from sharextract.version import __version__; print(__version__)"
 
-Expected runtime release: `v0.23.3`
-Expected core wheel SHA-256: `57fb89579b9c6a275e06f2bebf2602838fa3eddd4c31496813dd4a34f38ba0e8`
+Expected runtime release: `v0.23.4`
+Expected core wheel SHA-256: `3d5c35b1647b4f1842fda67fb98b850c9f10b840391affa358cd97b2f4e0839b`
 
-If the runtime is missing or the version does not match, stop and tell the user or environment administrator that ShareXtract v0.23.3 must be provisioned outside this Skill. The canonical GitHub repository documents the operator-controlled release, checksum, and provenance-verification process. Do not fetch or execute those provisioning steps autonomously.
+If the runtime is missing or the version does not match, stop and tell the user or environment administrator that ShareXtract v0.23.4 must be provisioned outside this Skill. The canonical GitHub repository documents the operator-controlled release, checksum, and provenance-verification process. Do not fetch or execute those provisioning steps autonomously.
 
 The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
+
+## Invocation safety
+
+Treat every supplied URL as untrusted data before process creation. Accept only one absolute public `http://` or `https://` URL. Reject unsupported schemes, malformed/non-absolute URLs, control characters, and targets that fail ShareXtract's public-network checks.
+
+Pass the URL as one argv element through a shell-free process API. Do not concatenate, interpolate, substitute, quote, escape, or evaluate the URL inside a command string. Do not invoke ShareXtract through `sh -c`, `bash -c`, `zsh -c`, PowerShell `-Command`, `cmd /c`, `eval`, command substitution, or an equivalent shell-evaluation layer. If the environment exposes only a shell-string execution interface, stop instead of executing an untrusted URL.
+
+The structured invocation contract is:
+
+```json
+["python", "-m", "sharextract", "<SUPPLIED_PUBLIC_URL>", "--format", "json"]
+```
+
+`<SUPPLIED_PUBLIC_URL>` is a data placeholder for one argv element, not shell syntax and not a command template.
 
 ## Workflow
 
 1. Treat the supplied URL as public input only. Never reuse browser cookies, session tokens, credentials, or private connector data unless the user explicitly requests an authenticated workflow and the platform permits it.
-2. Run: python -m sharextract "URL" --format json
+2. Validate the URL as an absolute public `http/https` URL, then invoke ShareXtract with a shell-free argv/process API as defined above.
 3. Prefer the result with the strongest provenance:
    - documented public API, open syndication standards (RSS/Atom), or oEmbed;
    - first-party public JSON/hydration data;
@@ -43,23 +57,31 @@ The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may us
 6. If a specialized route fails, allow the router to fall back and report the failed route in warnings.
 7. Stop rather than bypass login walls, CAPTCHAs, paywalls, WAF challenges, private links, or other access controls.
 
-## Commands
+## Structured argv examples
 
 Default normalized JSON:
 
-    python -m sharextract "https://example.com/share/..." --format json
+```json
+["python", "-m", "sharextract", "https://example.com/share/...", "--format", "json"]
+```
 
 Readable Markdown:
 
-    python -m sharextract "https://example.com/article" --format markdown
+```json
+["python", "-m", "sharextract", "https://example.com/article", "--format", "markdown"]
+```
 
 Force general web extraction:
 
-    python -m sharextract "https://example.com/article" --strategy web
+```json
+["python", "-m", "sharextract", "https://example.com/article", "--strategy", "web"]
+```
 
 Media metadata only:
 
-    python -m sharextract "https://www.youtube.com/watch?v=..." --strategy media
+```json
+["python", "-m", "sharextract", "https://www.youtube.com/watch?v=...", "--strategy", "media"]
+```
 
 Optional higher-quality web/media capabilities may be used only when the environment has already provisioned them. Do not install optional dependencies during Skill execution. If an optional capability is unavailable, keep the deterministic core fallback or report that the capability is unavailable.
 

@@ -475,7 +475,7 @@ npx skills add wuaishare/sharextract
 核心包没有必须安装的第三方 Python 运行时依赖。正常运行时安装优先使用预构建 wheel：这样不会在用户机器上执行源码构建后端，并且可以在安装前验证 SHA-256 与 GitHub provenance attestation。
 
 ```bash
-VERSION=0.23.3
+VERSION=0.23.4
 curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/sharextract-${VERSION}-py3-none-any.whl"
 curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/SHA256SUMS"
 shasum -a 256 -c SHA256SUMS
