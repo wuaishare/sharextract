@@ -74,18 +74,22 @@ def main() -> None:
     wheel_sha256 = sha256(wheel)
     skill_path = pathlib.Path(__file__).resolve().parents[1] / "SKILL.md"
     skill = skill_path.read_text(encoding="utf-8")
-    pin = re.search(
-        r"https://github\.com/wuaishare/sharextract/releases/download/"
-        r"v(?P<version>[0-9]+\.[0-9]+\.[0-9]+)/"
-        r"sharextract-(?P=version)-py3-none-any\.whl#sha256=(?P<sha>[a-f0-9]{64})",
+    version_pin = re.search(
+        r"^Expected runtime release:\s*\x60v(?P<version>[0-9]+\.[0-9]+\.[0-9]+)\x60\s*$",
         skill,
+        re.M,
     )
-    if not pin:
-        fail("SKILL.md must pin the release wheel URL and a 64-character SHA-256 digest")
-    if pin.group("version") != version:
-        fail(f"SKILL.md release version drifted: {pin.group('version')!r}")
-    if pin.group("sha") != wheel_sha256:
-        fail(f"SKILL.md wheel digest drifted: {pin.group('sha')} != {wheel_sha256}")
+    digest_pin = re.search(
+        r"^Expected core wheel SHA-256:\s*\x60(?P<sha>[a-f0-9]{64})\x60\s*$",
+        skill,
+        re.M,
+    )
+    if not version_pin or not digest_pin:
+        fail("SKILL.md must record the expected runtime release and a 64-character core wheel SHA-256 digest")
+    if version_pin.group("version") != version:
+        fail(f"SKILL.md runtime version drifted: {version_pin.group('version')!r}")
+    if digest_pin.group("sha") != wheel_sha256:
+        fail(f"SKILL.md wheel digest drifted: {digest_pin.group('sha')} != {wheel_sha256}")
 
     result = {
         "ok": True,

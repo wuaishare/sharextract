@@ -185,7 +185,7 @@ See [DISTRIBUTION.md](DISTRIBUTION.md) for marketplace/registry status, ownershi
 
 Core has no required third-party Python dependency. For a normal runtime install, prefer the prebuilt release wheel: it avoids source-build hooks and can be verified before installation.
 
-    VERSION=0.23.2
+    VERSION=0.23.3
     curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/sharextract-${VERSION}-py3-none-any.whl"
     curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/SHA256SUMS"
     shasum -a 256 -c SHA256SUMS

@@ -8,9 +8,9 @@ This document is the repository-level source of truth for Agent Skill distributi
 - Skill path: `/SKILL.md`
 - Runtime package: `sharextract`
 - Canonical repository license: Apache-2.0
-- Current release: `v0.23.2`
+- Current release: `v0.23.3`
 - Version source of truth: `pyproject.toml` + GitHub Releases
-- Core release integrity: reproducible `py3-none-any` wheel + `SHA256SUMS` + GitHub provenance attestation; the default Skill install pins the wheel SHA-256 and uses `--no-deps`
+- Core release integrity: reproducible `py3-none-any` wheel + `SHA256SUMS` + GitHub provenance attestation; `SKILL.md` records the expected runtime version and wheel SHA-256 but never installs software autonomously
 - Agent Skills metadata: `SKILL.md` uses the portable `license`, `compatibility`, and `metadata.author/version` fields
 
 ## Distribution matrix

@@ -2,23 +2,30 @@
 name: sharextract
 description: Extract normalized content from public share URLs, RSS/Atom feeds, timed-text/subtitle documents, and web pages using a protocol-first fallback ladder. Use for public AI chat shares, social/media links, RSS/Atom feeds, WebVTT/SRT/TTML captions, articles, oEmbed pages, public JSON endpoints, or when an agent needs the highest-fidelity public content without bypassing authentication, CAPTCHAs, paywalls, or access controls.
 license: Apache-2.0
-compatibility: Requires Python 3.10+ and network access for public-content retrieval; optional extras enable browser, media, MCP, and HTTP service routes.
+compatibility: Requires ShareXtract runtime v0.23.3 to be preinstalled by the environment/operator, Python 3.10+, and network access for public-content retrieval; this Skill does not install software.
 metadata:
   author: wuaishare
-  version: "0.23.2"
+  version: "0.23.3"
 ---
 
 # ShareXtract
 
 Extract public shared content with the highest-fidelity, lowest-cost method available and preserve how the content was obtained.
 
-## Runtime setup
+## Runtime requirement
 
-This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the dependency-minimal core wheel from the matching GitHub release before executing extraction commands. The wheel URL is pinned to v0.23.2 and its SHA-256 digest; `--no-deps` prevents runtime dependency resolution or source-build hooks:
+This Skill is an instruction layer only. It must not download, install, upgrade, or modify Python packages, repositories, browser binaries, system packages, or optional dependencies during Skill execution.
 
-    python -m pip install --no-deps "https://github.com/wuaishare/sharextract/releases/download/v0.23.2/sharextract-0.23.2-py3-none-any.whl#sha256=615d0d2447373b050aa4632487cadf1d512eb6d1f998648ca27147f14b1a2748"
+Before extraction, verify that the environment already provides the matching ShareXtract runtime:
 
-The release workflow builds the wheel reproducibly from the tagged source, publishes `SHA256SUMS`, and records a GitHub provenance attestation. Optional extras are not installed by this default Skill path. The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
+    python -c "from sharextract.version import __version__; print(__version__)"
+
+Expected runtime release: `v0.23.3`
+Expected core wheel SHA-256: `57fb89579b9c6a275e06f2bebf2602838fa3eddd4c31496813dd4a34f38ba0e8`
+
+If the runtime is missing or the version does not match, stop and tell the user or environment administrator that ShareXtract v0.23.3 must be provisioned outside this Skill. The canonical GitHub repository documents the operator-controlled release, checksum, and provenance-verification process. Do not fetch or execute those provisioning steps autonomously.
+
+The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
 
 ## Workflow
 
@@ -54,18 +61,14 @@ Media metadata only:
 
     python -m sharextract "https://www.youtube.com/watch?v=..." --strategy media
 
-Optional higher-quality web/media dependencies:
+Optional higher-quality web/media capabilities may be used only when the environment has already provisioned them. Do not install optional dependencies during Skill execution. If an optional capability is unavailable, keep the deterministic core fallback or report that the capability is unavailable.
 
-    python -m pip install -e ".[all]"
+Optional MCP/HTTP service surfaces may be used only when they are already provisioned and explicitly requested:
 
-
-Optional service surfaces:
-
-    python -m pip install -e ".[mcp,service]"
     sharextract-mcp
     sharextract-api --port 8787
 
-Use the service layers only as transports around the same public-content extraction contract; platform-specific logic belongs in adapters, not in MCP/HTTP handlers.
+Do not install or enable service dependencies autonomously. Use the service layers only as transports around the same public-content extraction contract; platform-specific logic belongs in adapters, not in MCP/HTTP handlers.
 
 ## Output contract
 
