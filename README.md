@@ -181,11 +181,26 @@ See [DISTRIBUTION.md](DISTRIBUTION.md) for marketplace/registry status, ownershi
 
 ## Install
 
-Core has no required third-party Python dependency:
+### Verified core release
+
+Core has no required third-party Python dependency. For a normal runtime install, prefer the prebuilt release wheel: it avoids source-build hooks and can be verified before installation.
+
+    VERSION=0.23.2
+    curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/sharextract-${VERSION}-py3-none-any.whl"
+    curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/SHA256SUMS"
+    shasum -a 256 -c SHA256SUMS
+    gh attestation verify "sharextract-${VERSION}-py3-none-any.whl" --repo wuaishare/sharextract
+    python -m pip install --no-deps "./sharextract-${VERSION}-py3-none-any.whl"
+
+On Linux, sha256sum -c SHA256SUMS can be used instead of shasum. --no-deps is intentional: the core wheel has no required runtime dependency, and the release gate rejects any future unguarded Requires-Dist entry.
+
+For source development:
 
     git clone https://github.com/wuaishare/sharextract.git
     cd sharextract
     python -m pip install -e .
+
+Optional extras resolve third-party packages and should be installed only when their capability is needed, preferably in an isolated environment with an appropriate lock/constraints policy.
 
 For stronger readable-page extraction:
 

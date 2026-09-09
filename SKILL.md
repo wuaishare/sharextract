@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Requires Python 3.10+ and network access for public-content retrieval; optional extras enable browser, media, MCP, and HTTP service routes.
 metadata:
   author: wuaishare
-  version: "0.23.1"
+  version: "0.23.2"
 ---
 
 # ShareXtract
@@ -14,11 +14,11 @@ Extract public shared content with the highest-fidelity, lowest-cost method avai
 
 ## Runtime setup
 
-This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the matching runtime release from the canonical GitHub repository before executing extraction commands. The command below pins the exact immutable commit behind v0.23.1:
+This Skill is the instruction layer for the canonical ShareXtract Python runtime. If `python -m sharextract` is not available, install the dependency-minimal core wheel from the matching GitHub release before executing extraction commands. The wheel URL is pinned to v0.23.2 and its SHA-256 digest; `--no-deps` prevents runtime dependency resolution or source-build hooks:
 
-    python -m pip install "git+https://github.com/wuaishare/sharextract.git@1d8610f883033ac8aa8d8ac711d77bd62a70f307"
+    python -m pip install --no-deps "https://github.com/wuaishare/sharextract/releases/download/v0.23.2/sharextract-0.23.2-py3-none-any.whl#sha256=615d0d2447373b050aa4632487cadf1d512eb6d1f998648ca27147f14b1a2748"
 
-The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
+The release workflow builds the wheel reproducibly from the tagged source, publishes `SHA256SUMS`, and records a GitHub provenance attestation. Optional extras are not installed by this default Skill path. The GitHub runtime remains Apache-2.0. Marketplace-specific Skill bundles may use a different distribution license where the marketplace requires it.
 
 ## Workflow
 

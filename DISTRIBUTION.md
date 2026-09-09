@@ -8,8 +8,9 @@ This document is the repository-level source of truth for Agent Skill distributi
 - Skill path: `/SKILL.md`
 - Runtime package: `sharextract`
 - Canonical repository license: Apache-2.0
-- Current release: `v0.23.1`
+- Current release: `v0.23.2`
 - Version source of truth: `pyproject.toml` + GitHub Releases
+- Core release integrity: reproducible `py3-none-any` wheel + `SHA256SUMS` + GitHub provenance attestation; the default Skill install pins the wheel SHA-256 and uses `--no-deps`
 - Agent Skills metadata: `SKILL.md` uses the portable `license`, `compatibility`, and `metadata.author/version` fields
 
 ## Distribution matrix
@@ -33,3 +34,4 @@ This document is the repository-level source of truth for Agent Skill distributi
 4. Version, license, install requirements, security boundaries, and last verification time should remain machine-readable where the platform supports them.
 5. ClawHub publishes only the portable Skill layer; the Python runtime remains canonical on GitHub under Apache-2.0.
 6. A marketplace listing is a distribution surface, not proof of security or quality; ShareXtract's tests, Adapter Health, provenance and release gates remain the primary evidence.
+7. Published core wheel assets are append-only by policy: never overwrite an existing release asset; cut a new patch release when runtime bits, build metadata, or the pinned digest changes.

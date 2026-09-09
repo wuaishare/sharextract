@@ -470,15 +470,30 @@ npx skills add wuaishare/sharextract
 
 ## 安装
 
-### 核心版
+### 已验证的核心发行版
 
-核心包没有必须安装的第三方 Python 依赖：
+核心包没有必须安装的第三方 Python 运行时依赖。正常运行时安装优先使用预构建 wheel：这样不会在用户机器上执行源码构建后端，并且可以在安装前验证 SHA-256 与 GitHub provenance attestation。
+
+```bash
+VERSION=0.23.2
+curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/sharextract-${VERSION}-py3-none-any.whl"
+curl -L -O "https://github.com/wuaishare/sharextract/releases/download/v${VERSION}/SHA256SUMS"
+shasum -a 256 -c SHA256SUMS
+gh attestation verify "sharextract-${VERSION}-py3-none-any.whl" --repo wuaishare/sharextract
+python -m pip install --no-deps "./sharextract-${VERSION}-py3-none-any.whl"
+```
+
+Linux 可使用 `sha256sum -c SHA256SUMS`。这里的 `--no-deps` 是刻意设计：core wheel 当前没有必须的运行时依赖，release gate 也会拒绝未来任何未受 optional extra 保护的 `Requires-Dist`。
+
+源码安装保留给开发场景：
 
 ```bash
 git clone https://github.com/wuaishare/sharextract.git
 cd sharextract
 python -m pip install -e .
 ```
+
+可选 extras 会解析第三方依赖，只应在确实需要对应能力时安装，并建议放在隔离环境中配合合适的 lock / constraints 策略。
 
 ### 更强网页正文提取
 
