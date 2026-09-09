@@ -23,7 +23,7 @@ This document is the repository-level source of truth for Agent Skill distributi
 | skills.re | GitHub import | **Publicly indexed:** https://skills.re/skills/wuaishare/sharextract/sharextract under Wuaishare, with registry-generated Python / Information-Retrieval / API-Integration tags |
 | Skillstore | GitHub URL + independent audit | Original submission `c3bdf489-27cd-4c45-b40c-d1c94d494de9` produced PR #3323 and a high-risk report against an older commit. Those findings drove upstream SSRF/browser/prompt-injection hardening and v0.23.1. A public re-submit now collides with the existing `pending/wuaishare/sharextract` target, so re-audit has been requested in aiskillstore/marketplace issue #3324 |
 | Smithery Skills | Git-backed/API listing | **Published/listed:** https://smithery.ai/skills/wuaishare/sharextract, backed by the canonical GitHub repository |
-| ClawHub | Registry publish | **Published/latest:** https://clawhub.ai/wuaishare/sharextract — `0.23.4`, MIT-0, 5-file authored thin Skill bundle. A server-side `--update` scan completed with A.I.G `clean / 0 findings`, ClawScan `clean / benign / high`, SkillSpector `0 / LOW / SAFE`, and Static Analysis `clean / 0 findings`; VirusTotal was unavailable. `clawhub skill verify` passes the security gate and is currently blocked only by platform-generated `skill-card.md` still being unavailable. Manual publish provenance remains `unavailable`, so ClawHub must not be presented as having verified the GitHub source anchor. Historical versions are retained for auditability; `latest` points to 0.23.4. |
+| ClawHub | Registry publish | **Published/latest:** https://clawhub.ai/wuaishare/sharextract — `0.23.4`, MIT-0, 5-file authored thin Skill bundle. A server-side `--update` scan completed with A.I.G `clean / 0 findings`, ClawScan `clean / benign / high`, SkillSpector `0 / LOW / SAFE`, and Static Analysis `clean / 0 findings`; VirusTotal was unavailable. `clawhub skill verify` now passes completely (`ok=true`, `decision=pass`, no reasons) and the platform-generated `skill-card.md` is available. Manual publish provenance remains `unavailable`, so ClawHub must not be presented as having verified the GitHub source anchor. Historical versions are retained for auditability; `latest` points to 0.23.4. |
 | AI智库 | First-party catalog | **Published:** https://ai.wuaishare.cn/hub/sharextract/ — richer GitHub/i18n/security enrichment is tracked as a catalog pipeline improvement |
 
 ## ClawHub verification evidence
@@ -38,7 +38,8 @@ This document is the repository-level source of truth for Agent Skill distributi
 - SkillSpector `2.3.5`: score `0`, severity `LOW`, recommendation `SAFE`, 0 issues
 - Static Analysis `v2.4.26`: `clean`, 0 findings
 - VirusTotal: unavailable for this scan; do not represent this as a clean VirusTotal verdict
-- `clawhub skill verify`: security gate passes; the overall verifier remains temporarily blocked by `card.missing` until ClawHub generates its server-side `skill-card.md`
+- `clawhub skill verify`: `ok=true`, `decision=pass`, no reasons; server-side `skill-card.md` is available
+- Skill Card SHA-256: `82b40f86997ffc5d3e3048774ee6cf6825fa24cd2d89a6e320b58c4ece140ead`
 - ClawHub signature: `unsigned`
 - ClawHub provenance: `unavailable` for this manually published version; the canonical GitHub v0.23.4 release separately provides a reproducible wheel, `SHA256SUMS`, and GitHub provenance attestation
 - Note: the scan API response includes the A.I.G result, while the current downloaded report ZIP does not yet contain a separate `aig.json`; treat the API response as the A.I.G evidence source until ClawHub's ZIP export format catches up
